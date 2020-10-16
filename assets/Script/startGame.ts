@@ -65,6 +65,16 @@ export default class NewClass extends cc.Component {
         } else {
             console.log("not found");
         }
+
+        y = pos[1] - 1;
+        inBoard = this.checkTileInBoard(tile, [x, y]);
+        if (inBoard) {
+            const nextTile: cc.Node = this.mapTile[x][y];
+            const nextTileColor: tile = nextTile.getComponent("tile").color;
+            console.log(nextTileColor);
+        } else {
+            console.log("not found");
+        }
     }
 
     findTile(findTile: cc.Node) {
