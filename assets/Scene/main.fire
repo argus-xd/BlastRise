@@ -15,9 +15,6 @@
     "_children": [
       {
         "__id__": 2
-      },
-      {
-        "__id__": 10
       }
     ],
     "_active": true,
@@ -391,51 +388,5 @@
     "_originalWidth": 960,
     "_originalHeight": 640,
     "_id": "e7+AGGrbZDvI9BjiJVJgdb"
-  },
-  {
-    "__type__": "cc.Node",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 1
-    },
-    "_id": "cf3CBlZm9Iv4xyarHGPHpr",
-    "_prefab": {
-      "__id__": 11
-    },
-    "_name": "tileWithBoard",
-    "_active": true,
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -55.651,
-        228.571,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 10
-    },
-    "asset": {
-      "__uuid__": "19d74b94-4b30-41d4-8e59-2af92a9bf97e"
-    },
-    "fileId": "",
-    "sync": true
   }
 ]

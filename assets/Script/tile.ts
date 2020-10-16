@@ -1,5 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import * as mathRandom from "../Script/random";
+import * as utility from "../Script/utility";
+import startGame from "../Script/startGame";
 
 @ccclass("ccTile")
 class ccTile {
@@ -24,7 +26,9 @@ export default class tile extends cc.Component {
     @property([ccTile])
     textureList: ccTile[] = [];
 
-    _setParent(parent){ 
+    board: startGame = null;
+
+    _setParent(parent) {
         parent.addChild(this.node);
     }
 
@@ -37,14 +41,18 @@ export default class tile extends cc.Component {
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
             this.textureList[rand].texture
         );
-        this.node.name = this.node.name + " " + this.textureList[rand].color;
+        this.node.name = this.textureList[rand].color;
         this.color = this.textureList[rand].color;
         this.score = this.textureList[rand].score;
 
+        this.board = utility
+            .findDeep(cc.director.getScene(), "board")
+            .getComponent("startGame");
 
-        this.node.on("mousedown", function (event) {
+        this.node.on("mousedown", (event) => {
             if (event._button === 0) {
-                console.log(this.node);
+                /*   console.log(this.node); */
+                this.board.findTile(this.node);
             }
         });
     }
