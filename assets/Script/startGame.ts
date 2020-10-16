@@ -20,20 +20,6 @@ export default class NewClass extends cc.Component {
         return tile;
     }
 
-    checkGem(gem, row, col) {
-        if (this.mapTile[row] == null) {
-            return false;
-        }
-        if (this.mapTile[row][col] == null) {
-            return false;
-        }
-        return gem;
-    }
-
-    findTile(get) {
-        console.log(get);
-    }
-
     createBoard() {
         let sizeTile = this.tilePrefab.data.getContentSize();
 
@@ -44,6 +30,16 @@ export default class NewClass extends cc.Component {
                 let tile = this.newTile(this.node, pos);
 
                 this.mapTile[n].push(tile);
+            }
+        }
+    }
+
+    findTile(findTile: cc.Node) {
+        for (let n = 0; n < this.sizeBoard.x; n++) {
+            for (let m = 0; m < this.sizeBoard.y; m++) {
+                if (this.mapTile[n][m] == findTile) {
+                    return [n, m];
+                }
             }
         }
     }
