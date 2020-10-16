@@ -34,6 +34,39 @@ export default class NewClass extends cc.Component {
         }
     }
 
+    checkTile(tile: cc.Node) {
+        let pos = this.findTile(tile);
+
+        this.checkInRow(tile, pos);
+    }
+
+    checkTileInBoard(tile, pos) {
+        let x = pos[0];
+        let y = pos[1];
+        if (this.mapTile[x] == null) {
+            return false;
+        }
+        if (this.mapTile[x][y] == null) {
+            return false;
+        }
+        return tile;
+    }
+
+    checkInRow(tile: cc.Node, pos) {
+        let x = pos[0];
+        let y = pos[1] + 1;
+        const findTileColor: string = tile.getComponent("tile").color;
+
+        let inBoard = this.checkTileInBoard(tile, [x, y]);
+        if (inBoard) {
+            const nextTile: cc.Node = this.mapTile[x][y];
+            const nextTileColor: tile = nextTile.getComponent("tile").color;
+            console.log(nextTileColor);
+        } else {
+            console.log("not found");
+        }
+    }
+
     findTile(findTile: cc.Node) {
         for (let n = 0; n < this.sizeBoard.x; n++) {
             for (let m = 0; m < this.sizeBoard.y; m++) {
