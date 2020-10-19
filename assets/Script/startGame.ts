@@ -94,7 +94,8 @@ export default class NewClass extends cc.Component {
                         move.height * n,
                         move.width * (-1 * posToGrav)
                     );
-                    move.runAction(cc.moveTo(1.5, newpos));
+                    let tileMove: tile = move.getComponent("tile");
+                    tileMove._setPositionAction(1.5, newpos);
 
                     this.mapTile[posToGrav--][n] = this.mapTile[m][n];
                     this.mapTile[m][n] = cc.Node;

@@ -35,6 +35,9 @@ export default class tile extends cc.Component {
     _setPosition(position) {
         this.node.setPosition(position);
     }
+    _setPositionAction(time, position) {
+        this.node.runAction(cc.moveTo(time, position));
+    }
 
     onLoad() {
         let rand = mathRandom.randomRangeInt(0, this.textureList.length);
