@@ -35,8 +35,14 @@ export default class tile extends cc.Component {
     _setPosition(position) {
         this.node.setPosition(position);
     }
-    _setPositionAction(time, position) {
-        this.node.runAction(cc.moveTo(time, position));
+    _setPositionAction(time, position, showIn = false) {
+        if (showIn) {
+            this.node.opacity = 99;
+            this.node.runAction(cc.fadeIn(0.5));
+        }
+        this.node.runAction(
+            cc.moveTo(time, position).easing(cc.easeBackInOut())
+        );
     }
 
     onLoad() {
@@ -54,7 +60,7 @@ export default class tile extends cc.Component {
 
         this.node.on("mousedown", (event) => {
             if (event._button === 0) {
-                this.board.comboTile(this.node);
+                this.board.clickTile(this.node);
             }
         });
     }

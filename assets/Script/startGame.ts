@@ -12,11 +12,18 @@ export default class NewClass extends cc.Component {
 
     mapTile = [];
 
-    newTile(parent, position) {
+    newTile(
+        parent,
+        position,
+        time = 1,
+        posAction: cc.Vec2 = null,
+        showIn = false
+    ) {
         const tile = cc.instantiate(this.tilePrefab);
         const tileProps: tile = tile.getComponent("tile");
         tileProps._setParent(parent);
         tileProps._setPosition(position);
+        if (posAction) tileProps._setPositionAction(time, posAction, showIn);
         return tile;
     }
 
@@ -34,6 +41,29 @@ export default class NewClass extends cc.Component {
         }
     }
 
+    genTileInEmpty() {
+        let sizeTile = this.tilePrefab.data.getContentSize();
+
+        for (let n = 0; n < this.sizeBoard.x; n++) {
+            for (let m = 0; m < this.sizeBoard.y; m++) {
+                let checkTile: cc.Node = this.mapTile[n][m];
+                if (!checkTile.active) {
+                    let pos = new cc.Vec2(
+                        sizeTile.height * m,
+                        sizeTile.width * 3
+                    );
+                    let posMove = new cc.Vec2(
+                        sizeTile.height * m,
+                        sizeTile.width * -n
+                    );
+                    let tile = this.newTile(this.node, pos, 0.5, posMove, true);
+                    this.mapTile[n][m] = tile;
+                    /*  let tileCom: tile = tile.getComponent("tile"); */
+                }
+            }
+        }
+    }
+
     xMarkTiles(tile: cc.Node) {
         let pos = this.findTile(tile);
         let row = this.checkInRow(tile, pos);
@@ -41,7 +71,6 @@ export default class NewClass extends cc.Component {
         let stackTile = [...row, ...col];
         return stackTile;
     }
-
     comboTile(tile: cc.Node) {
         let stackTile = this.xMarkTiles(tile);
         if (stackTile.length == 0) return;
@@ -66,8 +95,17 @@ export default class NewClass extends cc.Component {
         stackRemove.forEach((e: cc.Node) => {
             e.destroy();
         });
+    }
 
-        this.gravityTiles();
+    clickTile(tile: cc.Node) {
+        this.comboTile(tile);
+        setTimeout(() => {
+            this.gravityTiles();
+        }, 302);
+
+        setTimeout(() => {
+            this.genTileInEmpty();
+        }, 502);
     }
 
     gravityTiles() {
@@ -95,7 +133,7 @@ export default class NewClass extends cc.Component {
                         move.width * (-1 * posToGrav)
                     );
                     let tileMove: tile = move.getComponent("tile");
-                    tileMove._setPositionAction(1.5, newpos);
+                    tileMove._setPositionAction(0.5, newpos);
 
                     this.mapTile[posToGrav--][n] = this.mapTile[m][n];
                     this.mapTile[m][n] = cc.Node;
