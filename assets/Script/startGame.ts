@@ -34,10 +34,38 @@ export default class NewClass extends cc.Component {
         }
     }
 
-    checkTile(tile: cc.Node) {
+    xMarkTiles(tile: cc.Node) {
         let pos = this.findTile(tile);
+        let row = this.checkInRow(tile, pos);
+        let col = this.checkInCol(tile, pos);
+        let stackTile = [...row, ...col];
+        return stackTile;
+    }
 
-        this.checkInRow(tile, pos);
+    comboTile(tile: cc.Node) {
+        let stackTile = this.xMarkTiles(tile);
+        if (stackTile.length == 0) return;
+        let stackRemove = [];
+        stackRemove.push(tile);
+
+        while (stackTile.length > 0) {
+            let nextTile = stackTile.shift();
+            let xTiles = this.xMarkTiles(nextTile);
+            xTiles.forEach((xTile) => {
+                let inRem = false;
+                stackRemove.forEach((elRem) => {
+                    if (elRem._id == xTile._id) inRem = true;
+                });
+                if (!inRem) {
+                    stackTile.push(xTile);
+                }
+            });
+            stackRemove.push(nextTile);
+        }
+
+        stackRemove.forEach((e: cc.Node) => {
+            e.active = false;
+        });
     }
 
     checkTileInBoard(tile, pos) {
@@ -52,18 +80,28 @@ export default class NewClass extends cc.Component {
         return tile;
     }
 
+    chechColor(selectTile: cc.Node, matchTile: cc.Node) {
+        const firstTileColor: string = selectTile.getComponent("tile").color;
+        const secondTileColor: string = matchTile.getComponent("tile").color;
+        return firstTileColor == secondTileColor;
+    }
+
     checkInRow(tile: cc.Node, pos) {
         let x = pos[0];
         let y = pos[1] + 1;
-        const findTileColor: string = tile.getComponent("tile").color;
+        let tilesInRow = [];
 
         let inBoard = this.checkTileInBoard(tile, [x, y]);
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log(nextTileColor);
+            console.log("row right: " + nextTileColor);
+
+            if (this.chechColor(tile, nextTile)) {
+                tilesInRow.push(nextTile);
+            }
         } else {
-            console.log("not found");
+            console.log("row right: " + "not found");
         }
 
         y = pos[1] - 1;
@@ -71,10 +109,45 @@ export default class NewClass extends cc.Component {
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log(nextTileColor);
+            console.log("row left: " + nextTileColor);
+            if (this.chechColor(tile, nextTile)) {
+                tilesInRow.push(nextTile);
+            }
         } else {
-            console.log("not found");
+            console.log("row left: " + "not found");
         }
+        return tilesInRow;
+    }
+    checkInCol(tile: cc.Node, pos) {
+        let x = pos[0] + 1;
+        let y = pos[1];
+        let tilesInCol = [];
+
+        let inBoard = this.checkTileInBoard(tile, [x, y]);
+        if (inBoard) {
+            const nextTile: cc.Node = this.mapTile[x][y];
+            const nextTileColor: tile = nextTile.getComponent("tile").color;
+            console.log("col bottom: " + nextTileColor);
+            if (this.chechColor(tile, nextTile)) {
+                tilesInCol.push(nextTile);
+            }
+        } else {
+            console.log("col bottom: " + "not found");
+        }
+
+        x = pos[0] - 1;
+        inBoard = this.checkTileInBoard(tile, [x, y]);
+        if (inBoard) {
+            const nextTile: cc.Node = this.mapTile[x][y];
+            const nextTileColor: tile = nextTile.getComponent("tile").color;
+            console.log("col top: " + nextTileColor);
+            if (this.chechColor(tile, nextTile)) {
+                tilesInCol.push(nextTile);
+            }
+        } else {
+            console.log("col top: " + "not found");
+        }
+        return tilesInCol;
     }
 
     findTile(findTile: cc.Node) {

@@ -51,7 +51,7 @@ export default class tile extends cc.Component {
 
         this.node.on("mousedown", (event) => {
             if (event._button === 0) {
-                this.board.checkTile(this.node);
+                this.board.comboTile(this.node);
             }
         });
     }
