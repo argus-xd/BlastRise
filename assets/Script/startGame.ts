@@ -64,8 +64,45 @@ export default class NewClass extends cc.Component {
         }
 
         stackRemove.forEach((e: cc.Node) => {
-            e.active = false;
+            e.destroy();
         });
+
+        this.gravityTiles();
+    }
+
+    gravityTiles() {
+        for (let n = 0; n < this.sizeBoard.x - 1; n++) {
+            let posToGrav = null;
+
+            for (let m = this.sizeBoard.y; m >= 0; m--) {
+                let tile: cc.Node = this.mapTile[m][n];
+
+                if (!tile.active && !posToGrav) {
+                    posToGrav = m;
+                }
+
+                if (tile.active && posToGrav) {
+                    if (this.mapTile[m - 1]) {
+                        let top: cc.Node = this.mapTile[m - 1][n];
+                        if (!top.active) {
+                            continue;
+                        }
+                    }
+
+                    let move: cc.Node = this.mapTile[m][n];
+                    let newpos = new cc.Vec2(
+                        move.height * n,
+                        move.width * (-1 * posToGrav)
+                    );
+                    move.runAction(cc.moveTo(1.5, newpos));
+
+                    this.mapTile[posToGrav--][n] = this.mapTile[m][n];
+                    this.mapTile[m][n] = cc.Node;
+                }
+            }
+
+            /*   console.log(this.mapTile); */
+        }
     }
 
     checkTileInBoard(tile, pos) {
