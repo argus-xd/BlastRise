@@ -23,6 +23,15 @@ export default class tile extends cc.Component {
     @property
     score = 0;
 
+    @property
+    durationActionRemove = 0.4;
+
+    @property
+    durationActionFadeIn = 0.4;
+
+    @property
+    durationActionFadeOut = 0.4;
+
     @property([ccTile])
     textureList: ccTile[] = [];
 
@@ -38,11 +47,27 @@ export default class tile extends cc.Component {
     _setPositionAction(time, position, showIn = false) {
         if (showIn) {
             this.node.opacity = 99;
-            this.node.runAction(cc.fadeIn(0.5));
+            this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
+        }
+        this.node.runAction(
+            cc
+                .moveTo(this.durationActionRemove, position)
+                .easing(cc.easeBackInOut())
+        );
+    }
+    _setPositionActionRemove(time, position, showIn = false) {
+        if (showIn) {
+            this.node.opacity = 99;
+            this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
         }
         this.node.runAction(
             cc.moveTo(time, position).easing(cc.easeBackInOut())
         );
+
+        let scale = this.node.runAction(cc.scaleTo(0.4, 0.3, 0.3));
+        setTimeout(() => {
+            this.node.destroy();
+        }, 400);
     }
 
     onLoad() {

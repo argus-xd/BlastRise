@@ -93,19 +93,21 @@ export default class NewClass extends cc.Component {
         }
 
         stackRemove.forEach((e: cc.Node) => {
-            e.destroy();
+            let tileComp: tile = e.getComponent("tile");
+            tileComp._setPositionActionRemove(0.3, tile.position);
         });
     }
 
     clickTile(tile: cc.Node) {
         this.comboTile(tile);
+
         setTimeout(() => {
             this.gravityTiles();
-        }, 302);
+        }, 500);
 
         setTimeout(() => {
             this.genTileInEmpty();
-        }, 502);
+        }, 700);
     }
 
     gravityTiles() {
