@@ -10,6 +10,9 @@ export default class NewClass extends cc.Component {
     @property(cc.Prefab)
     tilePrefab: cc.Prefab = null;
 
+    @property(cc.Boolean)
+    clickBlock: Boolean = false;
+
     mapTile = [];
 
     newTile(
@@ -40,7 +43,10 @@ export default class NewClass extends cc.Component {
             }
         }
     }
-
+    _clickBlock(state: Boolean = null) {
+        if (state != null) this.clickBlock = state;
+        return this.clickBlock;
+    }
     genTileInEmpty() {
         let sizeTile = this.tilePrefab.data.getContentSize();
 
@@ -73,7 +79,7 @@ export default class NewClass extends cc.Component {
     }
     comboTile(tile: cc.Node) {
         let stackTile = this.xMarkTiles(tile);
-        if (stackTile.length == 0) return;
+        if (stackTile.length == 0) return false;
         let stackRemove = [];
         stackRemove.push(tile);
 
@@ -94,20 +100,27 @@ export default class NewClass extends cc.Component {
 
         stackRemove.forEach((e: cc.Node) => {
             let tileComp: tile = e.getComponent("tile");
-            tileComp._setPositionActionRemove(0.3, tile.position);
+            tileComp._setPositionActionRemove(tile.position);
         });
+        return true;
     }
 
     clickTile(tile: cc.Node) {
-        this.comboTile(tile);
+        let combo = this.comboTile(tile);
+        this._clickBlock(combo);
+        if (combo) {
+            setTimeout(() => {
+                this.gravityTiles();
+            }, 500);
 
-        setTimeout(() => {
-            this.gravityTiles();
-        }, 500);
+            setTimeout(() => {
+                this.genTileInEmpty();
+            }, 700);
 
-        setTimeout(() => {
-            this.genTileInEmpty();
-        }, 700);
+            setTimeout(() => {
+                this._clickBlock(false);
+            }, 800);
+        }
     }
 
     gravityTiles() {

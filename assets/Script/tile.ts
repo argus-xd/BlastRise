@@ -32,6 +32,9 @@ export default class tile extends cc.Component {
     @property
     durationActionFadeOut = 0.4;
 
+    @property
+    durationMoveTo = 0.3;
+
     @property([ccTile])
     textureList: ccTile[] = [];
 
@@ -55,13 +58,13 @@ export default class tile extends cc.Component {
                 .easing(cc.easeBackInOut())
         );
     }
-    _setPositionActionRemove(time, position, showIn = false) {
+    _setPositionActionRemove(position, showIn = false) {
         if (showIn) {
             this.node.opacity = 99;
             this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
         }
         this.node.runAction(
-            cc.moveTo(time, position).easing(cc.easeBackInOut())
+            cc.moveTo(this.durationMoveTo, position).easing(cc.easeBackInOut())
         );
         let scale = cc.sequence(
             cc.scaleTo(0.4, 0.3, 0.3),
@@ -72,7 +75,7 @@ export default class tile extends cc.Component {
         this.node.runAction(scale);
     }
 
-    onLoad() {
+    setSprite() {
         let rand = mathRandom.randomRangeInt(0, this.textureList.length);
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
             this.textureList[rand].texture
@@ -80,15 +83,24 @@ export default class tile extends cc.Component {
         this.node.name = this.textureList[rand].color;
         this.color = this.textureList[rand].color;
         this.score = this.textureList[rand].score;
-
-        this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
 
     tapTile() {
-        this.board = utility
-            .findDeep(cc.director.getScene(), "board")
-            .getComponent("startGame");
-        this.board.clickTile(this.node);
+        if (!this.board) {
+            this.board = utility
+                .findDeep(cc.director.getScene(), "board")
+                .getComponent("startGame");
+        }
+
+        if (!this.board._clickBlock()) {
+            this.board.clickTile(this.node);
+        }
+    }
+
+    onLoad() {
+        this.setSprite();
+
+        this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
 
     start() {}
