@@ -63,11 +63,13 @@ export default class tile extends cc.Component {
         this.node.runAction(
             cc.moveTo(time, position).easing(cc.easeBackInOut())
         );
-
-        let scale = this.node.runAction(cc.scaleTo(0.4, 0.3, 0.3));
-        setTimeout(() => {
-            this.node.destroy();
-        }, 400);
+        let scale = cc.sequence(
+            cc.scaleTo(0.4, 0.3, 0.3),
+            cc.callFunc(() => {
+                this.node.destroy();
+            })
+        );
+        this.node.runAction(scale);
     }
 
     onLoad() {
