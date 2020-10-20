@@ -76,7 +76,14 @@ export default class tile extends cc.Component {
     }
 
     setSprite() {
-        let rand = mathRandom.randomRangeInt(0, this.textureList.length);
+        /* let rand = mathRandom.randomRangeInt(0, this.textureList.length); */
+        let rand = mathRandom.weightedRand2({
+            0: 0.4,
+            1: 0.3,
+            2: 0.2,
+            3: 0.2,
+            4: 0.2,
+        });
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
             this.textureList[rand].texture
         );
