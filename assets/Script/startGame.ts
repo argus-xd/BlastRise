@@ -111,15 +111,15 @@ export default class NewClass extends cc.Component {
         if (combo) {
             setTimeout(() => {
                 this.gravityTiles();
-            }, 500);
+            }, 600);
 
             setTimeout(() => {
                 this.genTileInEmpty();
-            }, 700);
+            }, 1000);
 
             setTimeout(() => {
                 this._clickBlock(false);
-            }, 800);
+            }, 1100);
         }
     }
 
@@ -186,13 +186,13 @@ export default class NewClass extends cc.Component {
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log("row right: " + nextTileColor);
+            /* console.log("row right: " + nextTileColor); */
 
             if (this.chechColor(tile, nextTile)) {
                 tilesInRow.push(nextTile);
             }
         } else {
-            console.log("row right: " + "not found");
+            /* console.log("row right: " + "not found"); */
         }
 
         y = pos[1] - 1;
@@ -200,12 +200,12 @@ export default class NewClass extends cc.Component {
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log("row left: " + nextTileColor);
+            /* console.log("row left: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInRow.push(nextTile);
             }
         } else {
-            console.log("row left: " + "not found");
+            /* console.log("row left: " + "not found"); */
         }
         return tilesInRow;
     }
@@ -218,12 +218,12 @@ export default class NewClass extends cc.Component {
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log("col bottom: " + nextTileColor);
+            /*  console.log("col bottom: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInCol.push(nextTile);
             }
         } else {
-            console.log("col bottom: " + "not found");
+            /* console.log("col bottom: " + "not found"); */
         }
 
         x = pos[0] - 1;
@@ -231,12 +231,12 @@ export default class NewClass extends cc.Component {
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
             const nextTileColor: tile = nextTile.getComponent("tile").color;
-            console.log("col top: " + nextTileColor);
+            /* console.log("col top: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInCol.push(nextTile);
             }
         } else {
-            console.log("col top: " + "not found");
+            /* console.log("col top: " + "not found"); */
         }
         return tilesInCol;
     }

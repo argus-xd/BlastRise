@@ -33,7 +33,7 @@ export default class tile extends cc.Component {
     durationActionFadeOut = 0.4;
 
     @property
-    durationMoveTo = 0.3;
+    durationMoveTo = 0.4;
 
     @property([ccTile])
     textureList: ccTile[] = [];
@@ -63,22 +63,27 @@ export default class tile extends cc.Component {
             this.node.opacity = 99;
             this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
         }
-        this.node.runAction(
-            cc.moveTo(this.durationMoveTo, position).easing(cc.easeBackInOut())
-        );
-        let scale = cc.sequence(
+
+        cc.tween(this.node)
+            .to(this.durationMoveTo, { position: position, scale: 0.1 })
+            .start();
+
+        /*  let scale = cc.sequence(
             cc.scaleTo(0.4, 0.3, 0.3),
             cc.callFunc(() => {
                 this.node.destroy();
             })
         );
-        this.node.runAction(scale);
+        this.node.runAction(scale); */
+        setTimeout(() => {
+            this.node.destroy();
+        }, 444);
     }
 
     setSprite() {
         /* let rand = mathRandom.randomRangeInt(0, this.textureList.length); */
         let rand = mathRandom.weightedRand2({
-            0: 0.4,
+            0: 1,
             1: 0.3,
             2: 0.2,
             3: 0.2,
