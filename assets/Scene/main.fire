@@ -245,6 +245,7 @@
     "tilePrefab": {
       "__uuid__": "19d74b94-4b30-41d4-8e59-2af92a9bf97e"
     },
+    "clickBlock": false,
     "_id": "f35euGmhZKMpx/h/4gl0kZ"
   },
   {
@@ -286,7 +287,7 @@
       "array": [
         0,
         0,
-        527.4094709047232,
+        536.9357503463519,
         0,
         0,
         0,

@@ -88,10 +88,16 @@ export default class NewClass extends cc.Component {
             let xTiles = this.xMarkTiles(nextTile);
             xTiles.forEach((xTile) => {
                 let inRem = false;
+                let inStack = false;
                 stackRemove.forEach((elRem) => {
                     if (elRem._id == xTile._id) inRem = true;
                 });
-                if (!inRem) {
+
+                stackTile.forEach((elRem) => {
+                    if (elRem._id == xTile._id) inStack = true;
+                });
+
+                if (!inRem && !inStack) {
                     stackTile.push(xTile);
                 }
             });
