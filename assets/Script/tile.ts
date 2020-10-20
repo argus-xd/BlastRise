@@ -81,15 +81,14 @@ export default class tile extends cc.Component {
         this.color = this.textureList[rand].color;
         this.score = this.textureList[rand].score;
 
+        this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
+    }
+
+    tapTile() {
         this.board = utility
             .findDeep(cc.director.getScene(), "board")
             .getComponent("startGame");
-
-        this.node.on("mousedown", (event) => {
-            if (event._button === 0) {
-                this.board.clickTile(this.node);
-            }
-        });
+        this.board.clickTile(this.node);
     }
 
     start() {}
