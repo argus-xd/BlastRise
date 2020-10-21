@@ -138,15 +138,16 @@ export default class NewClass extends cc.Component {
 
                 if (!tile.active && !posToGrav) {
                     posToGrav = m;
+                    continue;
                 }
 
                 if (tile.active && posToGrav) {
-                    if (this.mapTile[m - 1]) {
+                    /* if (this.mapTile[m - 1]) {
                         let top: cc.Node = this.mapTile[m - 1][n];
                         if (!top.active) {
                             continue;
                         }
-                    }
+                    } */
 
                     let move: cc.Node = this.mapTile[m][n];
                     let newpos = new cc.Vec2(
@@ -160,8 +161,6 @@ export default class NewClass extends cc.Component {
                     this.mapTile[m][n] = cc.Node;
                 }
             }
-
-            /*   console.log(this.mapTile); */
         }
     }
 
