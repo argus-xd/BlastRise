@@ -47,7 +47,8 @@ export default class tile extends cc.Component {
     _setPosition(position) {
         this.node.setPosition(position);
     }
-    _setPositionAction(time, position, showIn = false) {
+    _setPositionAction(position, time: Number = null, showIn = false) {
+        if (time == null) time = this.durationMoveTo;
         if (showIn) {
             this.node.opacity = 99;
             this.node.runAction(cc.fadeIn(this.durationActionFadeIn));

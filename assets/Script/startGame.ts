@@ -26,7 +26,7 @@ export default class NewClass extends cc.Component {
         const tileProps: tile = tile.getComponent("tile");
         tileProps._setParent(parent);
         tileProps._setPosition(position);
-        if (posAction) tileProps._setPositionAction(time, posAction, showIn);
+        if (posAction) tileProps._setPositionAction(posAction, time, showIn);
         return tile;
     }
 
@@ -155,7 +155,7 @@ export default class NewClass extends cc.Component {
                         move.width * (-1 * posToGrav)
                     );
                     let tileMove: tile = move.getComponent("tile");
-                    tileMove._setPositionAction(0.5, newpos);
+                    tileMove._setPositionAction(newpos);
 
                     this.mapTile[posToGrav--][n] = this.mapTile[m][n];
                     this.mapTile[m][n] = cc.Node;
