@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
-import * as mathRandom from "./random";
-import startGame from "./tile-board";
-
+import * as mathRandom from "../Script/random";
+import * as utility from "../Script/utility";
+import startGame from "../Script/tile-board";
 @ccclass("ccTile")
 class ccTile {
     @property(cc.String)
@@ -14,7 +14,7 @@ class ccTile {
     texture: cc.Texture2D = null;
 }
 @ccclass
-export default class Tile extends cc.Component {
+export default class tile extends cc.Component {
     @property
     color: string = "";
 

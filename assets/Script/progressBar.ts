@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ProgressBar extends cc.Component {
+export default class progressBar extends cc.Component {
     @property(cc.ProgressBar)
     bar: cc.ProgressBar = null;
 
