@@ -68,6 +68,9 @@ export default class tile extends cc.Component {
     setColor(color) {
         this.color = color;
     }
+    setScore(value) {
+        this.score = value;
+    }
     setSprite(texture) {
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
             texture
@@ -92,5 +95,8 @@ export default class tile extends cc.Component {
 
     start() {}
 
+    onDestroy() {
+        this.node.parent.getComponent("score").set(this);
+    }
     // update (dt) {}
 }

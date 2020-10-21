@@ -1,14 +1,9 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
-
+import tile from "../Script/tile";
+import { ccTiles } from "./ccTiles";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class Score extends cc.Component {
+export default class score extends cc.Component {
     @property(cc.Label)
     label: cc.Label = null;
 
@@ -22,7 +17,33 @@ export default class Score extends cc.Component {
     })
     score = 0;
 
-    // onLoad () {}
+    onLoad() {
+        this.label.string = this.score.toString();
+    }
+
+    set(tile: tile) {
+        /*    this.score += tile.score; */
+        /* this.label.string = this.score.toString(); */
+
+        /*   cc.tween(this.label).to(1, { string: this.score }).start(); */
+        let lbl = this.label;
+        let next = (this.score += tile.score);
+        let prev = tile.score;
+
+        var obj = { a: this.score };
+        cc.tween(obj)
+            .to(
+                0.25,
+                { a: next },
+                {
+                    progress: (s, e, c, t) => {
+                        let num = Math.round(e * t);
+                        lbl.string = String(num);
+                    },
+                }
+            )
+            .start();
+    }
 
     start() {}
 

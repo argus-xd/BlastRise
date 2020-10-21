@@ -47,10 +47,11 @@ export default class propTiles extends cc.Component {
             3: 0.2,
             4: 0.2,
         });
-        let sprite = this.textureList[rand].texture;
-        prop.node.name = this.textureList[rand].color;
-        prop.color = this.textureList[rand].color;
-        prop.setSprite(sprite);
+        let sprite = this.textureList[rand];
+        prop.node.name = sprite.color;
+        prop.color = sprite.color;
+        prop.setSprite(sprite.texture);
+        prop.setScore(sprite.score);
     }
 
     // onLoad () {}

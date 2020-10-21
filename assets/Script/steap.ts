@@ -16,9 +16,13 @@ export default class Steap extends cc.Component {
     })
     steap = 30;
 
-    setScore(tile) {}
+    set() {
+        this.label.string = (--this.steap).toString();
+    }
 
-    // onLoad () {}
+    onLoad() {
+        this.label.string = this.steap.toString();
+    }
 
     start() {}
 

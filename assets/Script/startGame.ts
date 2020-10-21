@@ -3,6 +3,8 @@ const { ccclass, property } = cc._decorator;
 import * as mathRandom from "../Script/random";
 import tile from "../Script/tile";
 import { ccTiles } from "../Script/ccTiles";
+import steap from "../Script/steap";
+import bar from "../Script/progressBar";
 import propTiles from "../Script/propTiles";
 
 @ccclass
@@ -20,6 +22,12 @@ export default class startGame extends cc.Component {
     propTiles: propTiles = null;
 
     mapTile = [];
+
+    @property(steap)
+    steap: steap = null;
+
+    @property(bar)
+    bar: bar = null;
 
     createBoard() {
         let sizeTile = this.propTiles.tilePrefab.data.getContentSize();
@@ -103,6 +111,9 @@ export default class startGame extends cc.Component {
         let combo = this.comboTile(tile);
         this._clickBlock(combo);
         if (combo) {
+            this.steap.set();
+            this.bar.updateBar();
+
             setTimeout(() => {
                 this.gravityTiles();
             }, 600);
@@ -246,6 +257,8 @@ export default class startGame extends cc.Component {
 
     onLoad() {
         this.propTiles = this.node.getComponent("propTiles");
+        this.steap = this.node.getComponent("steap");
+        this.bar = this.node.getComponent("progressBar");
         this.createBoard();
     }
 
