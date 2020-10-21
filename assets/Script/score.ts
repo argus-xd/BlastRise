@@ -1,8 +1,8 @@
-import tile from "../Script/tile";
 const { ccclass, property } = cc._decorator;
+import tile from "./tile";
 
 @ccclass
-export default class score extends cc.Component {
+export default class Score extends cc.Component {
     @property(cc.Label)
     scoreLabel: cc.Label = null;
 
