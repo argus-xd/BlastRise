@@ -1,8 +1,18 @@
 const { ccclass, property } = cc._decorator;
 import * as mathRandom from "../Script/random";
 import * as utility from "../Script/utility";
-import startGame from "../Script/startGame";
+import startGame from "../Script/tile-board";
+@ccclass("ccTile")
+class ccTile {
+    @property(cc.String)
+    color: string = "";
 
+    @property(cc.Integer)
+    score = 10;
+
+    @property(cc.Texture2D)
+    texture: cc.Texture2D = null;
+}
 @ccclass
 export default class tile extends cc.Component {
     @property
@@ -25,9 +35,8 @@ export default class tile extends cc.Component {
 
     board: startGame = null;
 
-    _setParent(parent) {
-        parent.addChild(this.node);
-    }
+    @property(ccTile)
+    public textureList: ccTile[] = [];
 
     _setPosition(position) {
         this.node.setPosition(position);
@@ -54,34 +63,39 @@ export default class tile extends cc.Component {
             .to(this.durationMoveTo, { position: position, scale: 0.1 })
             .start();
 
-        /*  let scale = cc.sequence(
+        /* let scale = cc.sequence(
             cc.scaleTo(0.4, 0.3, 0.3),
             cc.callFunc(() => {
                 this.node.destroy();
             })
         );
         this.node.runAction(scale); */
+
         setTimeout(() => {
             this.node.destroy();
         }, 444);
     }
-    setColor(color) {
-        this.color = color;
-    }
-    setScore(value) {
-        this.score = value;
-    }
-    setSprite(texture) {
+
+    setSprite() {
+        const rand = mathRandom.weightedRand2({
+            0: 0.2,
+            1: 0.2,
+            2: 0.2,
+            3: 0.2,
+            4: 0.2,
+        });
+        const tileProperties = this.textureList[rand];
+        this.node.name = tileProperties.color;
+        this.color = tileProperties.color;
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
-            texture
+            tileProperties.texture
         );
+        this.score = tileProperties.score;
     }
 
     tapTile() {
         if (!this.board) {
-            this.board = utility
-                .findDeep(cc.director.getScene(), "board")
-                .getComponent("startGame");
+            this.board = this.node.parent.getComponent("tile-board");
         }
 
         if (!this.board._clickBlock()) {
@@ -90,13 +104,12 @@ export default class tile extends cc.Component {
     }
 
     onLoad() {
+        this.setSprite();
         this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
 
     start() {}
 
-    onDestroy() {
-        this.node.parent.getComponent("score").set(this);
-    }
+    onDestroy() {}
     // update (dt) {}
 }

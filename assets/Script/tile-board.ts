@@ -1,51 +1,75 @@
 const { ccclass, property } = cc._decorator;
 
-import * as mathRandom from "../Script/random";
-import tile from "../Script/tile";
-import { ccTiles } from "../Script/ccTiles";
-import steap from "../Script/steap";
-import bar from "../Script/progressBar";
-import propTiles from "../Script/propTiles";
+import tile from "./tile";
+import score from "./score";
+import bar from "./progressBar";
 
 @ccclass
 export default class startGame extends cc.Component {
     @property(cc.Vec2)
     sizeBoard: cc.Vec2 = new cc.Vec2(5, 5);
 
-    /* @property(ccTiles)
-    public textureList: ccTiles[] = []; */
-
     @property(cc.Boolean)
     clickBlock: Boolean = false;
 
-    @property(propTiles)
-    propTiles: propTiles = null;
+    @property(cc.Prefab)
+    tilePrefab: cc.Prefab = null;
+
+    totalMoves = 0;
+
+    @property({
+        type: cc.Integer,
+    })
+    maxMoves = 30;
+
+    @property({
+        type: cc.Integer,
+    })
+    scoreToWin = 1000;
 
     mapTile = [];
-
-    @property(steap)
-    steap: steap = null;
-
-    @property(bar)
     bar: bar = null;
+    score: score = null;
+
+    onLoad() {
+        this.bar = this.node.getComponent("progressBar");
+        this.score = this.node.getComponent("score");
+        this.createBoard();
+    }
 
     createBoard() {
-        let sizeTile = this.propTiles.tilePrefab.data.getContentSize();
+        let sizeTile = this.tilePrefab.data.getContentSize();
         for (let n = 0; n < this.sizeBoard.x; n++) {
             this.mapTile.push([]);
             for (let m = 0; m < this.sizeBoard.y; m++) {
+                /// Обьект -> свойство
                 let pos = new cc.Vec2(sizeTile.height * m, sizeTile.width * -n);
-                let tile = this.propTiles.newTile(pos);
+                let tile = this.newTile(pos);
+                this.node.addChild(tile);
+
                 this.mapTile[n].push(tile);
             }
         }
     }
+
+    newTile(position, posAction = null) {
+        const tile = cc.instantiate(this.tilePrefab);
+        const prop: tile = tile.getComponent("tile");
+
+        prop._setPosition(position);
+        if (posAction) {
+            prop._setPositionAction(posAction);
+        }
+
+        return tile;
+    }
+
     _clickBlock(state: Boolean = null) {
         if (state != null) this.clickBlock = state;
         return this.clickBlock;
     }
     genTileInEmpty() {
-        let sizeTile = this.propTiles.tilePrefab.data.getContentSize();
+        let sizeTile = this.tilePrefab.data.getContentSize();
 
         for (let n = 0; n < this.sizeBoard.x; n++) {
             for (let m = 0; m < this.sizeBoard.y; m++) {
@@ -59,7 +83,9 @@ export default class startGame extends cc.Component {
                         sizeTile.height * m,
                         sizeTile.width * -n
                     );
-                    let tile = this.propTiles.newTile(pos, posMove);
+                    let tile = this.newTile(pos, posMove);
+                    this.node.addChild(tile);
+
                     this.mapTile[n][m] = tile;
                 }
             }
@@ -103,6 +129,7 @@ export default class startGame extends cc.Component {
         stackRemove.forEach((e: cc.Node) => {
             let tileComp: tile = e.getComponent("tile");
             tileComp._setPositionActionRemove(tile.position);
+            this.score.addScore(tileComp.score);
         });
         return true;
     }
@@ -111,8 +138,13 @@ export default class startGame extends cc.Component {
         let combo = this.comboTile(tile);
         this._clickBlock(combo);
         if (combo) {
-            this.steap.set();
-            this.bar.updateBar();
+            this.totalMoves++;
+            const moveLeft = this.maxMoves - this.totalMoves;
+            this.score.setMovesLeft(moveLeft.toString());
+            this.bar.setProgressByScore(
+                this.scoreToWin,
+                this.score.currentScore
+            );
 
             setTimeout(() => {
                 this.gravityTiles();
@@ -255,14 +287,7 @@ export default class startGame extends cc.Component {
         }
     }
 
-    onLoad() {
-        this.propTiles = this.node.getComponent("propTiles");
-        this.steap = this.node.getComponent("steap");
-        this.bar = this.node.getComponent("progressBar");
-        this.createBoard();
-    }
+    /*  start() {}
 
-    start() {}
-
-    update(dt) {}
+    update(dt) {} */
 }

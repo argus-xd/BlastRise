@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export class ccTiles extends cc.Component {
+class ccTiles extends cc.Component {
     @property(cc.String)
     color: string = "";
 
@@ -11,3 +11,5 @@ export class ccTiles extends cc.Component {
     @property(cc.Texture2D)
     texture: cc.Texture2D = null;
 }
+
+module.exports = { ccTiles };
