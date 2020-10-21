@@ -28,9 +28,6 @@ export default class GameStatus extends cc.Component {
     }
 
     restartGame() {
-        /* cc.director.loadScene("main"); */
-        /* const scene = cc.director.getScene();
-        cc.director.runScene(scene); */
         cc.game.restart();
     }
     // onLoad () {}

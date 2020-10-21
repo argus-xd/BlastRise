@@ -34,7 +34,7 @@ export default class StartGame extends cc.Component {
     gamestatus: gamestatus = null;
 
     onLoad() {
-        this.bar = this.node.getComponent("progress-bar");
+        this.bar = this.node.getComponent("progressBar");
         this.score = this.node.getComponent("score");
         this.gamestatus = this.node.getComponent("game-status");
         this.createBoard();
@@ -148,8 +148,7 @@ export default class StartGame extends cc.Component {
                 this.scoreToWin,
                 this.score.currentScore
             );
-            /* this.gamestatus.endGame(); */
-            /* this.gamestatus.restartGame(); */
+
             setTimeout(() => {
                 this.gravityTiles();
             }, 600);

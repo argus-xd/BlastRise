@@ -9,11 +9,6 @@ export default class Score extends cc.Component {
     @property(cc.Label)
     movesLabel: cc.Label = null;
 
-    /*  @property({
-        type: cc.Integer,
-    })
-    scoreFinish = 1000; */
-
     currentScore = 0;
 
     onLoad() {
