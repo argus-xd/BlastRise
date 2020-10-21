@@ -2,10 +2,11 @@ const { ccclass, property } = cc._decorator;
 
 import tile from "./tile";
 import score from "./score";
-import bar from "./progressBar";
+import bar from "./progress-bar";
+import gamestatus from "./game-status";
 
 @ccclass
-export default class startGame extends cc.Component {
+export default class StartGame extends cc.Component {
     @property(cc.Vec2)
     sizeBoard: cc.Vec2 = new cc.Vec2(5, 5);
 
@@ -30,10 +31,12 @@ export default class startGame extends cc.Component {
     mapTile = [];
     bar: bar = null;
     score: score = null;
+    gamestatus: gamestatus = null;
 
     onLoad() {
-        this.bar = this.node.getComponent("progressBar");
+        this.bar = this.node.getComponent("progress-bar");
         this.score = this.node.getComponent("score");
+        this.gamestatus = this.node.getComponent("game-status");
         this.createBoard();
     }
 
@@ -145,7 +148,8 @@ export default class startGame extends cc.Component {
                 this.scoreToWin,
                 this.score.currentScore
             );
-
+            /* this.gamestatus.endGame(); */
+            /* this.gamestatus.restartGame(); */
             setTimeout(() => {
                 this.gravityTiles();
             }, 600);
