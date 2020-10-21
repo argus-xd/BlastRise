@@ -2,43 +2,32 @@ const { ccclass, property } = cc._decorator;
 
 import * as mathRandom from "../Script/random";
 import tile from "../Script/tile";
+import { ccTiles } from "../Script/ccTiles";
+import propTiles from "../Script/propTiles";
+
 @ccclass
-export default class NewClass extends cc.Component {
+export default class startGame extends cc.Component {
     @property(cc.Vec2)
     sizeBoard: cc.Vec2 = new cc.Vec2(5, 5);
 
-    @property(cc.Prefab)
-    tilePrefab: cc.Prefab = null;
+    /* @property(ccTiles)
+    public textureList: ccTiles[] = []; */
 
     @property(cc.Boolean)
     clickBlock: Boolean = false;
 
+    @property(propTiles)
+    propTiles: propTiles = null;
+
     mapTile = [];
 
-    newTile(
-        parent,
-        position,
-        time = 1,
-        posAction: cc.Vec2 = null,
-        showIn = false
-    ) {
-        const tile = cc.instantiate(this.tilePrefab);
-        const tileProps: tile = tile.getComponent("tile");
-        tileProps._setParent(parent);
-        tileProps._setPosition(position);
-        if (posAction) tileProps._setPositionAction(posAction, time, showIn);
-        return tile;
-    }
-
     createBoard() {
-        let sizeTile = this.tilePrefab.data.getContentSize();
-
+        let sizeTile = this.propTiles.tilePrefab.data.getContentSize();
         for (let n = 0; n < this.sizeBoard.x; n++) {
             this.mapTile.push([]);
             for (let m = 0; m < this.sizeBoard.y; m++) {
                 let pos = new cc.Vec2(sizeTile.height * m, sizeTile.width * -n);
-                let tile = this.newTile(this.node, pos);
-
+                let tile = this.propTiles.newTile(pos);
                 this.mapTile[n].push(tile);
             }
         }
@@ -48,7 +37,7 @@ export default class NewClass extends cc.Component {
         return this.clickBlock;
     }
     genTileInEmpty() {
-        let sizeTile = this.tilePrefab.data.getContentSize();
+        let sizeTile = this.propTiles.tilePrefab.data.getContentSize();
 
         for (let n = 0; n < this.sizeBoard.x; n++) {
             for (let m = 0; m < this.sizeBoard.y; m++) {
@@ -62,9 +51,8 @@ export default class NewClass extends cc.Component {
                         sizeTile.height * m,
                         sizeTile.width * -n
                     );
-                    let tile = this.newTile(this.node, pos, 0.5, posMove, true);
+                    let tile = this.propTiles.newTile(pos, posMove);
                     this.mapTile[n][m] = tile;
-                    /*  let tileCom: tile = tile.getComponent("tile"); */
                 }
             }
         }
@@ -257,6 +245,7 @@ export default class NewClass extends cc.Component {
     }
 
     onLoad() {
+        this.propTiles = this.node.getComponent("propTiles");
         this.createBoard();
     }
 

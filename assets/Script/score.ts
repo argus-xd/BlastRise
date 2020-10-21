@@ -9,6 +9,9 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class Score extends cc.Component {
+    @property(cc.Label)
+    label: cc.Label = null;
+
     @property({
         type: cc.Integer,
     })

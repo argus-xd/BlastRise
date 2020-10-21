@@ -3,18 +3,6 @@ import * as mathRandom from "../Script/random";
 import * as utility from "../Script/utility";
 import startGame from "../Script/startGame";
 
-@ccclass("ccTile")
-class ccTile {
-    @property(cc.String)
-    color: string = "";
-
-    @property(cc.Integer)
-    score = 10;
-
-    @property(cc.Texture2D)
-    texture: cc.Texture2D = null;
-}
-
 @ccclass
 export default class tile extends cc.Component {
     @property
@@ -34,9 +22,6 @@ export default class tile extends cc.Component {
 
     @property
     durationMoveTo = 0.4;
-
-    @property([ccTile])
-    textureList: ccTile[] = [];
 
     board: startGame = null;
 
@@ -80,22 +65,13 @@ export default class tile extends cc.Component {
             this.node.destroy();
         }, 444);
     }
-
-    setSprite() {
-        /* let rand = mathRandom.randomRangeInt(0, this.textureList.length); */
-        let rand = mathRandom.weightedRand2({
-            0: 0.2,
-            1: 0.2,
-            2: 0.2,
-            3: 0.2,
-            4: 0.2,
-        });
+    setColor(color) {
+        this.color = color;
+    }
+    setSprite(texture) {
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
-            this.textureList[rand].texture
+            texture
         );
-        this.node.name = this.textureList[rand].color;
-        this.color = this.textureList[rand].color;
-        this.score = this.textureList[rand].score;
     }
 
     tapTile() {
@@ -111,8 +87,6 @@ export default class tile extends cc.Component {
     }
 
     onLoad() {
-        this.setSprite();
-
         this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
 
