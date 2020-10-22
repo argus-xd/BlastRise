@@ -966,8 +966,8 @@
     "tilePrefab": {
       "__uuid__": "19d74b94-4b30-41d4-8e59-2af92a9bf97e"
     },
-    "maxMoves": 1,
-    "scoreToWin": 500,
+    "maxMoves": 10,
+    "scoreToWin": 250,
     "_id": "f35euGmhZKMpx/h/4gl0kZ"
   },
   {
@@ -1598,6 +1598,7 @@
       "__id__": 18
     },
     "_enabled": true,
+    "fadaInDuration": 0.5,
     "wining": {
       "__id__": 36
     },
@@ -1608,10 +1609,10 @@
       "__id__": 37
     },
     "btnWining": {
-      "__id__": 39
+      "__id__": 46
     },
     "BtnLose": {
-      "__id__": 46
+      "__id__": 39
     },
     "_id": "14YAmXTVdFrItfpSvbZIeJ"
   },
@@ -1630,7 +1631,7 @@
         "__id__": 50
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": null,
     "_opacity": 255,
@@ -1689,10 +1690,10 @@
     },
     "_children": [
       {
-        "__id__": 38
+        "__id__": 36
       },
       {
-        "__id__": 36
+        "__id__": 38
       }
     ],
     "_active": false,

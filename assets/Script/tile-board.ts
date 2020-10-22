@@ -113,11 +113,24 @@ export default class StartGame extends cc.Component {
     }
 
     xMarkTiles(tile: cc.Node) {
-        let pos = this.findTile(tile);
-        let row = this.checkInRow(tile, pos);
-        let col = this.checkInCol(tile, pos);
-        let stackTile = [...row, ...col];
-        return stackTile;
+        const pos = this.findTile(tile);
+        let tilesInRow = [];
+        const xy = [
+            [pos[0], pos[1] + 1],
+            [pos[0], pos[1] - 1],
+            [pos[0] + 1, pos[1]],
+            [pos[0] - 1, pos[1]],
+        ];
+        xy.forEach((pos) => {
+            let inBoard = this.checkTileInBoard(tile, [pos[0], pos[1]]);
+            if (inBoard) {
+                const nextTile: cc.Node = this.mapTile[pos[0]][pos[1]];
+                if (this.chechColor(tile, nextTile)) {
+                    tilesInRow.push(nextTile);
+                }
+            }
+        });
+        return tilesInRow;
     }
     comboTile(tile: cc.Node) {
         let stackTile = this.xMarkTiles(tile);
@@ -224,53 +237,6 @@ export default class StartGame extends cc.Component {
         const firstTileColor: string = selectTile.getComponent("tile").color;
         const secondTileColor: string = matchTile.getComponent("tile").color;
         return firstTileColor == secondTileColor;
-    }
-
-    checkInRow(tile: cc.Node, pos) {
-        let x = pos[0];
-        let y = pos[1] + 1;
-        let tilesInRow = [];
-
-        let inBoard = this.checkTileInBoard(tile, [x, y]);
-        if (inBoard) {
-            const nextTile: cc.Node = this.mapTile[x][y];
-            if (this.chechColor(tile, nextTile)) {
-                tilesInRow.push(nextTile);
-            }
-        }
-
-        y = pos[1] - 1;
-        inBoard = this.checkTileInBoard(tile, [x, y]);
-        if (inBoard) {
-            const nextTile: cc.Node = this.mapTile[x][y];
-            if (this.chechColor(tile, nextTile)) {
-                tilesInRow.push(nextTile);
-            }
-        }
-        return tilesInRow;
-    }
-    checkInCol(tile: cc.Node, pos) {
-        let x = pos[0] + 1;
-        let y = pos[1];
-        let tilesInCol = [];
-
-        let inBoard = this.checkTileInBoard(tile, [x, y]);
-        if (inBoard) {
-            const nextTile: cc.Node = this.mapTile[x][y];
-            if (this.chechColor(tile, nextTile)) {
-                tilesInCol.push(nextTile);
-            }
-        }
-
-        x = pos[0] - 1;
-        inBoard = this.checkTileInBoard(tile, [x, y]);
-        if (inBoard) {
-            const nextTile: cc.Node = this.mapTile[x][y];
-            if (this.chechColor(tile, nextTile)) {
-                tilesInCol.push(nextTile);
-            }
-        }
-        return tilesInCol;
     }
 
     findTile(findTile: cc.Node) {
