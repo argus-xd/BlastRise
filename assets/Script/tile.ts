@@ -60,12 +60,10 @@ export default class Tile extends cc.Component {
         }
 
         cc.tween(this.node)
-            .to(this.durationMoveTo, { position: position, scale: 0.1 })
-            .then(
-                cc.callFunc(() => {
-                    this.node.destroy();
-                })
-            )
+            .to(this.durationMoveTo, { position: position, scale: 0 })
+            .call(() => {
+                this.node.destroy();
+            })
             .start();
     }
 

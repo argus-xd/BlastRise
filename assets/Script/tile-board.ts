@@ -195,10 +195,10 @@ export default class StartGame extends cc.Component {
     }
 
     gravityTiles() {
-        for (let n = 0; n < this.boardSize.x - 1; n++) {
+        for (let n = 0; n <= this.boardSize.y - 1; n++) {
             let posToGrav = null;
 
-            for (let m = this.boardSize.y; m >= 0; m--) {
+            for (let m = this.boardSize.x - 1; m >= 0; m--) {
                 let tile: cc.Node = this.mapTile[m][n];
 
                 if (!tile.active && !posToGrav) {
