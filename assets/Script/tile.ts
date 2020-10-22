@@ -42,29 +42,44 @@ export default class Tile extends cc.Component {
         this.node.setPosition(position);
     }
     _setPositionAction(position, time: Number = null, showIn = false) {
-        if (time == null) time = this.durationMoveTo;
-        if (showIn) {
-            this.node.opacity = 99;
-            this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
-        }
-        this.node.runAction(
-            cc
-                .moveTo(this.durationActionRemove, position)
-                .easing(cc.easeBackInOut())
-        );
+        return new Promise((resolve) => {
+            if (time == null) time = this.durationMoveTo;
+            if (showIn) {
+                this.node.opacity = 99;
+                this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
+            }
+
+            this.node.runAction(
+                cc.sequence(
+                    cc
+                        .moveTo(this.durationActionRemove, position)
+                        .easing(cc.easeBackInOut()),
+                    cc.callFunc(() => {
+                        resolve();
+                    })
+                )
+            );
+        });
     }
     _setPositionActionRemove(position, showIn = false) {
-        if (showIn) {
-            this.node.opacity = 99;
-            this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
-        }
+        return new Promise((resolve) => {
+            if (showIn) {
+                this.node.opacity = 99;
+                this.node.runAction(cc.fadeIn(this.durationActionFadeIn));
+            }
 
-        cc.tween(this.node)
-            .to(this.durationMoveTo, { position: position, scale: 0 })
-            .call(() => {
-                this.node.destroy();
-            })
-            .start();
+            cc.tween(this.node)
+                .to(
+                    this.durationMoveTo,
+                    { position: position, scale: 0 },
+                    { easing: "easeBackInOut" }
+                )
+                .call(() => {
+                    this.node.destroy();
+                    resolve();
+                })
+                .start();
+        });
     }
 
     setSprite() {

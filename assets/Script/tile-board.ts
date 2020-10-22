@@ -132,7 +132,7 @@ export default class StartGame extends cc.Component {
         });
         return tilesInRow;
     }
-    comboTile(tile: cc.Node) {
+    async comboTile(tile: cc.Node) {
         let stackTile = this.xMarkTiles(tile);
         if (stackTile.length == 0) return false;
         let stackRemove = [];
@@ -159,16 +159,42 @@ export default class StartGame extends cc.Component {
             stackRemove.push(nextTile);
         }
 
+        let arrPromise = [];
         stackRemove.forEach((e: cc.Node) => {
-            let tileComp: tile = e.getComponent("tile");
-            tileComp._setPositionActionRemove(tile.position);
-            this.score.addScore(tileComp.score);
+            arrPromise.push(this.stackRemove(e, tile));
         });
-        return true;
+
+        return await new Promise((resolve) => {
+            this.awaitAllPromise(arrPromise).then(() => {
+                resolve();
+            });
+        });
+    }
+    stackRemove(e: cc.Node, tile) {
+        return new Promise((Resolve) => {
+            let tileComp: tile = e.getComponent("tile");
+            this.score.addScore(tileComp.score);
+            tileComp._setPositionActionRemove(tile.position).then((e) => {
+                Resolve();
+            });
+        });
     }
 
-    clickTile(tile: cc.Node) {
-        let combo = this.comboTile(tile);
+    async awaitAllPromise(arrPromise) {
+        return new Promise((resolve) => {
+            (async () => {
+                await Promise.all(arrPromise);
+                resolve(true);
+            })();
+        });
+    }
+
+    async clickTile(tile: cc.Node) {
+        this.clickEventAction(true);
+        let combo = await this.comboTile(tile).then((e: boolean) => {
+            return e;
+        });
+
         this.clickEventAction(combo);
         if (combo) {
             this.totalMoves++;
@@ -179,22 +205,18 @@ export default class StartGame extends cc.Component {
                 this.score.currentScore
             );
 
-            setTimeout(() => {
-                this.gravityTiles();
-            }, 600);
-
-            setTimeout(() => {
-                this.genTileInEmpty();
-            }, 1000);
+            this.gravityTiles().then((e) => {});
+            this.genTileInEmpty();
 
             setTimeout(() => {
                 this.clickEventAction(false);
                 this.eventEndGame();
-            }, 1100);
+            }, 700);
         }
     }
 
-    gravityTiles() {
+    async gravityTiles() {
+        let promisesArr = [];
         for (let n = 0; n <= this.boardSize.y - 1; n++) {
             let posToGrav = null;
 
@@ -212,13 +234,19 @@ export default class StartGame extends cc.Component {
                         move.width * (-1 * posToGrav)
                     );
                     let tileMove: tile = move.getComponent("tile");
-                    tileMove._setPositionAction(newpos);
+                    let propmis = tileMove._setPositionAction(newpos);
+                    promisesArr.push(propmis);
 
                     this.mapTile[posToGrav--][n] = this.mapTile[m][n];
                     this.mapTile[m][n] = cc.Node;
                 }
             }
         }
+        return await new Promise((resolve) => {
+            this.awaitAllPromise(promisesArr).then(() => {
+                resolve();
+            });
+        });
     }
 
     checkTileInBoard(tile, pos) {
