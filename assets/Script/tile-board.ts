@@ -5,6 +5,7 @@ import score from "./score";
 import bar from "./progress-bar";
 import gamestatus from "./game-status";
 import { EndGameType } from "./endgametype";
+import { TileType } from "./tiletype";
 
 @ccclass
 export default class StartGame extends cc.Component {

@@ -1,6 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import * as mathRandom from "./random";
 import startGame from "./tile-board";
+import { TileType } from "./tiletype";
 
 @ccclass("ccTile")
 class ccTile {
@@ -15,6 +16,9 @@ class ccTile {
 }
 @ccclass
 export default class Tile extends cc.Component {
+    @property({ type: cc.Enum(TileType) })
+    TileType: TileType = TileType.tile;
+
     @property
     color: string = "";
 
