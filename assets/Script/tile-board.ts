@@ -4,11 +4,12 @@ import tile from "./tile";
 import score from "./score";
 import bar from "./progress-bar";
 import gamestatus from "./game-status";
+import { EndGameType } from "./endgametype";
 
 @ccclass
 export default class StartGame extends cc.Component {
     @property(cc.Vec2)
-    sizeBoard: cc.Vec2 = new cc.Vec2(5, 5);
+    boardSize: cc.Vec2 = new cc.Vec2(5, 5);
 
     @property(cc.Boolean)
     clickBlock: Boolean = false;
@@ -34,19 +35,39 @@ export default class StartGame extends cc.Component {
     gamestatus: gamestatus = null;
 
     onLoad() {
-        this.bar = this.node.getComponent("progressBar");
+        this.bar = this.node.getComponent("progress-bar");
         this.score = this.node.getComponent("score");
         this.gamestatus = this.node.getComponent("game-status");
+        this.score.setMovesLeft((this.maxMoves - this.totalMoves).toString());
         this.createBoard();
     }
 
+    clickEventAction(state: Boolean = null) {
+        if (state != null) this.clickBlock = state;
+        return this.clickBlock;
+    }
+
+    eventEndGame() {
+        if (
+            this.totalMoves == this.maxMoves &&
+            this.score.currentScore < this.scoreToWin
+        ) {
+            this.gamestatus.endGame(EndGameType.lose);
+            this.clickEventAction(true);
+        }
+
+        if (this.score.currentScore >= this.scoreToWin) {
+            this.gamestatus.endGame(EndGameType.wining);
+            this.clickEventAction(true);
+        }
+    }
+
     createBoard() {
-        let sizeTile = this.tilePrefab.data.getContentSize();
-        for (let n = 0; n < this.sizeBoard.x; n++) {
+        let tileSize = this.tilePrefab.data.getContentSize();
+        for (let n = 0; n < this.boardSize.x; n++) {
             this.mapTile.push([]);
-            for (let m = 0; m < this.sizeBoard.y; m++) {
-                /// Обьект -> свойство
-                let pos = new cc.Vec2(sizeTile.height * m, sizeTile.width * -n);
+            for (let m = 0; m < this.boardSize.y; m++) {
+                let pos = new cc.Vec2(tileSize.height * m, tileSize.width * -n);
                 let tile = this.newTile(pos);
                 this.node.addChild(tile);
 
@@ -67,15 +88,11 @@ export default class StartGame extends cc.Component {
         return tile;
     }
 
-    _clickBlock(state: Boolean = null) {
-        if (state != null) this.clickBlock = state;
-        return this.clickBlock;
-    }
     genTileInEmpty() {
         let sizeTile = this.tilePrefab.data.getContentSize();
 
-        for (let n = 0; n < this.sizeBoard.x; n++) {
-            for (let m = 0; m < this.sizeBoard.y; m++) {
+        for (let n = 0; n < this.boardSize.x; n++) {
+            for (let m = 0; m < this.boardSize.y; m++) {
                 let checkTile: cc.Node = this.mapTile[n][m];
                 if (!checkTile.active) {
                     let pos = new cc.Vec2(
@@ -139,7 +156,7 @@ export default class StartGame extends cc.Component {
 
     clickTile(tile: cc.Node) {
         let combo = this.comboTile(tile);
-        this._clickBlock(combo);
+        this.clickEventAction(combo);
         if (combo) {
             this.totalMoves++;
             const moveLeft = this.maxMoves - this.totalMoves;
@@ -158,31 +175,24 @@ export default class StartGame extends cc.Component {
             }, 1000);
 
             setTimeout(() => {
-                this._clickBlock(false);
+                this.clickEventAction(false);
+                this.eventEndGame();
             }, 1100);
         }
     }
 
     gravityTiles() {
-        for (let n = 0; n < this.sizeBoard.x - 1; n++) {
+        for (let n = 0; n < this.boardSize.x - 1; n++) {
             let posToGrav = null;
 
-            for (let m = this.sizeBoard.y; m >= 0; m--) {
+            for (let m = this.boardSize.y; m >= 0; m--) {
                 let tile: cc.Node = this.mapTile[m][n];
 
                 if (!tile.active && !posToGrav) {
                     posToGrav = m;
                     continue;
                 }
-
                 if (tile.active && posToGrav) {
-                    /* if (this.mapTile[m - 1]) {
-                        let top: cc.Node = this.mapTile[m - 1][n];
-                        if (!top.active) {
-                            continue;
-                        }
-                    } */
-
                     let move: cc.Node = this.mapTile[m][n];
                     let newpos = new cc.Vec2(
                         move.height * n,
@@ -281,8 +291,8 @@ export default class StartGame extends cc.Component {
     }
 
     findTile(findTile: cc.Node) {
-        for (let n = 0; n < this.sizeBoard.x; n++) {
-            for (let m = 0; m < this.sizeBoard.y; m++) {
+        for (let n = 0; n < this.boardSize.x; n++) {
+            for (let m = 0; m < this.boardSize.y; m++) {
                 if (this.mapTile[n][m] == findTile) {
                     return [n, m];
                 }

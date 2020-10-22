@@ -98,7 +98,7 @@ export default class Tile extends cc.Component {
             this.board = this.node.parent.getComponent("tile-board");
         }
 
-        if (!this.board._clickBlock()) {
+        if (!this.board.clickEventAction()) {
             this.board.clickTile(this.node);
         }
     }
