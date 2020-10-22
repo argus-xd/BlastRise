@@ -234,27 +234,18 @@ export default class StartGame extends cc.Component {
         let inBoard = this.checkTileInBoard(tile, [x, y]);
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
-            const nextTileColor: tile = nextTile.getComponent("tile").color;
-            /* console.log("row right: " + nextTileColor); */
-
             if (this.chechColor(tile, nextTile)) {
                 tilesInRow.push(nextTile);
             }
-        } else {
-            /* console.log("row right: " + "not found"); */
         }
 
         y = pos[1] - 1;
         inBoard = this.checkTileInBoard(tile, [x, y]);
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
-            const nextTileColor: tile = nextTile.getComponent("tile").color;
-            /* console.log("row left: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInRow.push(nextTile);
             }
-        } else {
-            /* console.log("row left: " + "not found"); */
         }
         return tilesInRow;
     }
@@ -266,26 +257,18 @@ export default class StartGame extends cc.Component {
         let inBoard = this.checkTileInBoard(tile, [x, y]);
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
-            const nextTileColor: tile = nextTile.getComponent("tile").color;
-            /*  console.log("col bottom: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInCol.push(nextTile);
             }
-        } else {
-            /* console.log("col bottom: " + "not found"); */
         }
 
         x = pos[0] - 1;
         inBoard = this.checkTileInBoard(tile, [x, y]);
         if (inBoard) {
             const nextTile: cc.Node = this.mapTile[x][y];
-            const nextTileColor: tile = nextTile.getComponent("tile").color;
-            /* console.log("col top: " + nextTileColor); */
             if (this.chechColor(tile, nextTile)) {
                 tilesInCol.push(nextTile);
             }
-        } else {
-            /* console.log("col top: " + "not found"); */
         }
         return tilesInCol;
     }
