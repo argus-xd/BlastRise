@@ -76,7 +76,7 @@ export default class Tile extends cc.Component {
                 .to(
                     this.durationMoveTo,
                     { position: position, scale: 0 },
-                    { easing: "easeBackInOut" }
+                    { easing: "backIn" }
                 )
                 .call(() => {
                     this.node.parent.emit("score", this.score);
