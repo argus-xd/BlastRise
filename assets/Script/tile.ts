@@ -61,19 +61,12 @@ export default class Tile extends cc.Component {
 
         cc.tween(this.node)
             .to(this.durationMoveTo, { position: position, scale: 0.1 })
+            .then(
+                cc.callFunc(() => {
+                    this.node.destroy();
+                })
+            )
             .start();
-
-        /* let scale = cc.sequence(
-            cc.scaleTo(0.4, 0.3, 0.3),
-            cc.callFunc(() => {
-                this.node.destroy();
-            })
-        );
-        this.node.runAction(scale); */
-
-        setTimeout(() => {
-            this.node.destroy();
-        }, 444);
     }
 
     setSprite() {
