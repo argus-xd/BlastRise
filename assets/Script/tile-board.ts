@@ -40,6 +40,10 @@ export default class StartGame extends cc.Component {
         this.gamestatus = this.node.getComponent("game-status");
         this.score.setMovesLeft((this.maxMoves - this.totalMoves).toString());
         this.createBoard();
+
+        this.node.on("score", (scoreCount: number) => {
+            this.score.addScore(scoreCount);
+        });
     }
 
     clickEventAction(state: Boolean = null) {
@@ -166,14 +170,13 @@ export default class StartGame extends cc.Component {
 
         return await new Promise((resolve) => {
             this.awaitAllPromise(arrPromise).then(() => {
-                resolve();
+                resolve(true);
             });
         });
     }
     stackRemove(e: cc.Node, tile) {
         return new Promise((Resolve) => {
             let tileComp: tile = e.getComponent("tile");
-            this.score.addScore(tileComp.score);
             tileComp._setPositionActionRemove(tile.position).then((e) => {
                 Resolve();
             });

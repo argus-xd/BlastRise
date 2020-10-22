@@ -75,6 +75,7 @@ export default class Tile extends cc.Component {
                     { easing: "easeBackInOut" }
                 )
                 .call(() => {
+                    this.node.parent.emit("score", this.score);
                     this.node.destroy();
                     resolve();
                 })
