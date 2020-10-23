@@ -53,6 +53,9 @@ export default class GameStatus extends cc.Component {
         return true;
     }
 
+    nextLevel() {
+        cc.game.restart();
+    }
     restartGame() {
         cc.game.restart();
     }
@@ -60,7 +63,7 @@ export default class GameStatus extends cc.Component {
         this.wining.active = false;
         this.lose.active = false;
 
-        this.btnWining.on(cc.Node.EventType.TOUCH_END, this.restartGame);
+        this.btnWining.on(cc.Node.EventType.TOUCH_END, this.nextLevel);
         this.BtnLose.on(cc.Node.EventType.TOUCH_END, this.restartGame);
     }
 }
