@@ -115,11 +115,8 @@ export default class StartGame extends cc.Component {
                 }
             }
         }
-        return await new Promise((resolve) => {
-            this.awaitAllPromise(promisesArr).then(() => {
-                resolve();
-            });
-        });
+
+        await Promise.all(promisesArr);
     }
 
     xMarkTiles(tile: cc.Node) {
@@ -169,33 +166,15 @@ export default class StartGame extends cc.Component {
             stackRemove.push(nextTile);
         }
 
-        let arrPromise = [];
+        let promisesArr = [];
         stackRemove.forEach((e: cc.Node) => {
-            arrPromise.push(this.stackRemove(e, tile));
-        });
-
-        return await new Promise((resolve) => {
-            this.awaitAllPromise(arrPromise).then(() => {
-                resolve(true);
-            });
-        });
-    }
-    stackRemove(e: cc.Node, tile) {
-        return new Promise((Resolve) => {
             let tileComp: tile = e.getComponent("tile");
-            tileComp.setPositionActionRemove(tile.position).then((e) => {
-                Resolve();
-            });
+            let promise = tileComp.setPositionActionRemove(tile.position);
+            promisesArr.push(promise);
         });
-    }
 
-    async awaitAllPromise(arrPromise) {
-        return new Promise((resolve) => {
-            (async () => {
-                await Promise.all(arrPromise);
-                resolve(true);
-            })();
-        });
+        await Promise.all(promisesArr);
+        return true;
     }
 
     async clickTile(tile: cc.Node) {
@@ -250,11 +229,8 @@ export default class StartGame extends cc.Component {
                 }
             }
         }
-        return await new Promise((resolve) => {
-            this.awaitAllPromise(promisesArr).then(() => {
-                resolve();
-            });
-        });
+
+        await Promise.all(promisesArr);
     }
 
     checkTileInBoard(tile, pos) {
