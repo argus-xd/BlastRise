@@ -14,4 +14,4 @@ serve build/web-desktop -s -p 9000
 
 ## Demo
 
--   https://37.79.254.211:9000
+-   http://37.79.254.211:9000
