@@ -17,7 +17,7 @@ class ccTile {
 @ccclass
 export default class Tile extends cc.Component {
     @property({ type: cc.Enum(TileType) })
-    TileType: TileType = TileType.tile;
+    tileType: TileType = TileType.tile;
 
     @property
     color: string = "";
@@ -42,10 +42,7 @@ export default class Tile extends cc.Component {
     @property(ccTile)
     public textureList: ccTile[] = [];
 
-    _setPosition(position) {
-        this.node.setPosition(position);
-    }
-    _setPositionAction(position, time: Number = null, showIn = false) {
+    setPositionAction(position, time: Number = null, showIn = false) {
         return new Promise((resolve) => {
             if (time == null) time = this.durationMoveTo;
             if (showIn) {
@@ -65,7 +62,7 @@ export default class Tile extends cc.Component {
             );
         });
     }
-    _setPositionActionRemove(position, showIn = false) {
+    setPositionActionRemove(position, showIn = false) {
         return new Promise((resolve) => {
             if (showIn) {
                 this.node.opacity = 99;
@@ -115,7 +112,9 @@ export default class Tile extends cc.Component {
     }
 
     onLoad() {
-        this.setSprite();
+        if (this.tileType == TileType.tile) {
+            this.setSprite();
+        }
         this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
 

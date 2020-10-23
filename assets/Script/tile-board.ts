@@ -4,6 +4,7 @@ import tile from "./tile";
 import score from "./score";
 import bar from "./progress-bar";
 import gamestatus from "./game-status";
+import * as mathRandom from "./random";
 import { EndGameType } from "./endgametype";
 import { TileType } from "./tiletype";
 
@@ -81,15 +82,9 @@ export default class StartGame extends cc.Component {
         }
     }
 
-    newTile(position, posAction = null) {
+    newTile(position) {
         const tile = cc.instantiate(this.tilePrefab);
-        const prop: tile = tile.getComponent("tile");
-
-        prop._setPosition(position);
-        if (posAction) {
-            prop._setPositionAction(posAction);
-        }
-
+        tile.setPosition(position);
         return tile;
     }
 
@@ -108,7 +103,10 @@ export default class StartGame extends cc.Component {
                         sizeTile.height * m,
                         sizeTile.width * -n
                     );
-                    let tile = this.newTile(pos, posMove);
+                    let tile = this.newTile(pos);
+                    let prop: tile = tile.getComponent("tile");
+                    prop.setPositionAction(posMove);
+
                     this.node.addChild(tile);
 
                     this.mapTile[n][m] = tile;
@@ -178,7 +176,7 @@ export default class StartGame extends cc.Component {
     stackRemove(e: cc.Node, tile) {
         return new Promise((Resolve) => {
             let tileComp: tile = e.getComponent("tile");
-            tileComp._setPositionActionRemove(tile.position).then((e) => {
+            tileComp.setPositionActionRemove(tile.position).then((e) => {
                 Resolve();
             });
         });
@@ -238,7 +236,7 @@ export default class StartGame extends cc.Component {
                         move.width * (-1 * posToGrav)
                     );
                     let tileMove: tile = move.getComponent("tile");
-                    let propmis = tileMove._setPositionAction(newpos);
+                    let propmis = tileMove.setPositionAction(newpos);
                     promisesArr.push(propmis);
 
                     this.mapTile[posToGrav--][n] = this.mapTile[m][n];
