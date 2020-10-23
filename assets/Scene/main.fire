@@ -901,7 +901,7 @@
       "__id__": 34
     },
     "_N$mode": 0,
-    "_N$progress": 0.4,
+    "_N$progress": 0.6,
     "_N$reverse": false,
     "_id": "3bYtRmPGFFkZPSZODUKy/K"
   },
@@ -1331,7 +1331,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
+      "width": 180,
       "height": 30
     },
     "_anchorPoint": {
@@ -1405,7 +1405,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        120.855,
+        76.603,
         0,
         0,
         0,

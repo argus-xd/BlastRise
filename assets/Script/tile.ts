@@ -111,6 +111,18 @@ export default class Tile extends cc.Component {
         }
     }
 
+    missCombo() {
+        let rotate = cc
+            .tween()
+            .to(0.08, { rotation: 30 })
+            .to(0.08, { rotation: -30 });
+
+        cc.tween(this.node)
+            .then(rotate)
+            .repeat(2)
+            .to(0.08, { rotation: 0 })
+            .start();
+    }
     onLoad() {
         if (this.tileType == TileType.tile) {
             this.setSprite();

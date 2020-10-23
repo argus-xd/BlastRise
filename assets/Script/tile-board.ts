@@ -141,7 +141,11 @@ export default class StartGame extends cc.Component {
     }
     async comboTile(tile: cc.Node) {
         let stackTile = this.xMarkTiles(tile);
-        if (stackTile.length == 0) return false;
+        if (stackTile.length == 0) {
+            let prop: tile = tile.getComponent("tile");
+            prop.missCombo();
+            return false;
+        }
         let stackRemove = [];
         stackRemove.push(tile);
 
