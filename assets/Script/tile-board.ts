@@ -53,7 +53,7 @@ export default class StartGame extends cc.Component {
         return this.clickBlock;
     }
 
-    eventEndGame() {
+    checkProgress() {
         if (
             this.totalMoves == this.maxMoves &&
             this.score.currentScore < this.scoreToWin
@@ -198,7 +198,7 @@ export default class StartGame extends cc.Component {
             await Promise.all(arrPropimesAwait);
 
             this.clickEventAction(false);
-            this.eventEndGame();
+            this.checkProgress();
         }
     }
 
