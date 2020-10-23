@@ -88,8 +88,9 @@ export default class StartGame extends cc.Component {
         return tile;
     }
 
-    genTileInEmpty() {
+    async genTileInEmpty() {
         let sizeTile = this.tilePrefab.data.getContentSize();
+        let promisesArr = [];
 
         for (let n = 0; n < this.boardSize.x; n++) {
             for (let m = 0; m < this.boardSize.y; m++) {
@@ -105,7 +106,8 @@ export default class StartGame extends cc.Component {
                     );
                     let tile = this.newTile(pos);
                     let prop: tile = tile.getComponent("tile");
-                    prop.setPositionAction(posMove);
+                    let promise = prop.setPositionAction(posMove);
+                    promisesArr.push(promise);
 
                     this.node.addChild(tile);
 
@@ -113,6 +115,11 @@ export default class StartGame extends cc.Component {
                 }
             }
         }
+        return await new Promise((resolve) => {
+            this.awaitAllPromise(promisesArr).then(() => {
+                resolve();
+            });
+        });
     }
 
     xMarkTiles(tile: cc.Node) {
@@ -206,14 +213,13 @@ export default class StartGame extends cc.Component {
                 this.scoreToWin,
                 this.score.currentScore
             );
+            const gravityTiles = this.gravityTiles();
+            const genTileInEmpty = this.genTileInEmpty();
+            let arrPropimesAwait = [gravityTiles, genTileInEmpty];
+            await Promise.all(arrPropimesAwait);
 
-            this.gravityTiles().then((e) => {});
-            this.genTileInEmpty();
-
-            setTimeout(() => {
-                this.clickEventAction(false);
-                this.eventEndGame();
-            }, 700);
+            this.clickEventAction(false);
+            this.eventEndGame();
         }
     }
 
