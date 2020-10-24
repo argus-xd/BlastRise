@@ -111,7 +111,7 @@ export default class Tile extends cc.Component {
         }
     }
 
-    missCombo() {
+    noComboAnimation() {
         let rotate = cc
             .tween()
             .to(0.08, { rotation: 30 })

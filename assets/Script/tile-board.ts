@@ -144,65 +144,76 @@ export default class StartGame extends cc.Component {
 
         return foundTiles;
     }
-    async comboTile(tile: cc.Node) {
-        let stackTile = this.nearbyTilesWithEqualColor(tile);
 
-        if (stackTile.length == 0) {
-            let prop: tile = tile.getComponent("tile");
-            prop.missCombo();
-            return false;
+    comboTiles(clickedTile: cc.Node) {
+        const comboTiles = [];
+        const nearbyTiles = this.nearbyTilesWithEqualColor(clickedTile);
+
+        if (nearbyTiles.length == 0) {
+            clickedTile.getComponent("tile").noComboAnimation();
+
+            return [];
         }
-        let stackRemove = [];
-        stackRemove.push(tile);
 
-        while (stackTile.length > 0) {
-            let nextTile = stackTile.shift();
+        comboTiles.push(clickedTile);
+
+        while (nearbyTiles.length > 0) {
+            let nextTile = nearbyTiles.shift();
             let xTiles = this.nearbyTilesWithEqualColor(nextTile);
-            xTiles.forEach((xTile) => {
-                let inRem = stackRemove.some((tile) => tile._id == xTile._id);
-                let inStack = stackTile.some((tile) => tile._id == xTile._id);
 
-                if (!inRem && !inStack) {
-                    stackTile.push(xTile);
+            xTiles.forEach((xTile) => {
+                const inCombo = comboTiles.some(
+                    (tile) => tile._id == xTile._id
+                );
+                const inStack = nearbyTiles.some(
+                    (tile) => tile._id == xTile._id
+                );
+
+                if (!inCombo && !inStack) {
+                    nearbyTiles.push(xTile);
                 }
             });
-            stackRemove.push(nextTile);
+
+            comboTiles.push(nextTile);
         }
 
-        let promisesArr = [];
-        stackRemove.forEach((e: cc.Node) => {
-            let tileComp: tile = e.getComponent("tile");
-            let promise = tileComp.setPositionActionRemove(tile.position);
-            promisesArr.push(promise);
-        });
-
-        await Promise.all(promisesArr);
-        return true;
+        return comboTiles;
     }
 
-    async clickTile(tile: cc.Node) {
+    async clickTile(clickedTile: cc.Node) {
+        const comboTiles = this.comboTiles(clickedTile);
+
+        if (!comboTiles.length) {
+            return;
+        }
+
         this.clickEventAction(true);
-        let combo = await this.comboTile(tile).then((e: boolean) => {
-            return e;
+
+        const tilesAnimationPromsises = [];
+
+        comboTiles.forEach((tile: cc.Node) => {
+            let tileComp: tile = tile.getComponent("tile");
+            let promise = tileComp.setPositionActionRemove(
+                clickedTile.position
+            );
+            tilesAnimationPromsises.push(promise);
         });
 
-        this.clickEventAction(combo);
-        if (combo) {
-            this.totalMoves++;
-            const moveLeft = this.maxMoves - this.totalMoves;
-            this.score.setMovesLeft(moveLeft.toString());
-            this.bar.setProgressByScore(
-                this.scoreToWin,
-                this.score.currentScore
-            );
-            const gravityTiles = this.gravityTiles();
-            const genTileInEmpty = this.genTileInEmpty();
-            let arrPropimesAwait = [gravityTiles, genTileInEmpty];
-            await Promise.all(arrPropimesAwait);
+        await Promise.all(tilesAnimationPromsises);
 
-            this.clickEventAction(false);
-            this.checkProgress();
-        }
+        this.totalMoves++;
+        const moveLeft = this.maxMoves - this.totalMoves;
+        this.score.setMovesLeft(moveLeft.toString());
+        this.bar.setProgressByScore(this.scoreToWin, this.score.currentScore);
+        
+        const gravityTiles = this.gravityTiles();
+        const genTileInEmpty = this.genTileInEmpty();
+
+        let arrPropimesAwait = [gravityTiles, genTileInEmpty];
+        await Promise.all(arrPropimesAwait);
+
+        this.clickEventAction(false);
+        this.checkProgress();
     }
 
     async gravityTiles() {
