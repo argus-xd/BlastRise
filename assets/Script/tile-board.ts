@@ -119,28 +119,34 @@ export default class StartGame extends cc.Component {
         await Promise.all(promisesArr);
     }
 
-    xMarkTiles(tile: cc.Node) {
-        const pos = this.findTile(tile);
-        let tilesInRow = [];
-        const xy = [
+    nearbyTilesWithEqualColor(tile: cc.Node) {
+        const pos = this.getTilePosition(tile);
+        const foundTiles = [];
+
+        const nearbyTilesPositions = [
             [pos[0], pos[1] + 1],
             [pos[0], pos[1] - 1],
             [pos[0] + 1, pos[1]],
             [pos[0] - 1, pos[1]],
         ];
-        xy.forEach((pos) => {
-            let inBoard = this.checkTileInBoard(tile, [pos[0], pos[1]]);
-            if (inBoard) {
-                const nextTile: cc.Node = this.mapTile[pos[0]][pos[1]];
-                if (this.chechColor(tile, nextTile)) {
-                    tilesInRow.push(nextTile);
+
+        nearbyTilesPositions.forEach(([x, y]) => {
+            const tileExists = this.checkTileInBoard(tile, [x, y]);
+
+            if (tileExists) {
+                const tileForCheck: cc.Node = this.mapTile[x][y];
+
+                if (this.compareColors(tile, tileForCheck)) {
+                    foundTiles.push(tileForCheck);
                 }
             }
         });
-        return tilesInRow;
+
+        return foundTiles;
     }
     async comboTile(tile: cc.Node) {
-        let stackTile = this.xMarkTiles(tile);
+        let stackTile = this.nearbyTilesWithEqualColor(tile);
+
         if (stackTile.length == 0) {
             let prop: tile = tile.getComponent("tile");
             prop.missCombo();
@@ -151,7 +157,7 @@ export default class StartGame extends cc.Component {
 
         while (stackTile.length > 0) {
             let nextTile = stackTile.shift();
-            let xTiles = this.xMarkTiles(nextTile);
+            let xTiles = this.nearbyTilesWithEqualColor(nextTile);
             xTiles.forEach((xTile) => {
                 let inRem = stackRemove.some((tile) => tile._id == xTile._id);
                 let inStack = stackTile.some((tile) => tile._id == xTile._id);
@@ -242,13 +248,13 @@ export default class StartGame extends cc.Component {
         return tile;
     }
 
-    chechColor(selectTile: cc.Node, matchTile: cc.Node) {
+    compareColors(selectTile: cc.Node, matchTile: cc.Node) {
         const firstTileColor: string = selectTile.getComponent("tile").color;
         const secondTileColor: string = matchTile.getComponent("tile").color;
         return firstTileColor == secondTileColor;
     }
 
-    findTile(findTile: cc.Node) {
+    getTilePosition(findTile: cc.Node) {
         for (let n = 0; n < this.boardSize.x; n++) {
             for (let m = 0; m < this.boardSize.y; m++) {
                 if (this.mapTile[n][m] == findTile) {
