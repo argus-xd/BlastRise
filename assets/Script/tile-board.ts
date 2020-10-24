@@ -150,8 +150,6 @@ export default class StartGame extends cc.Component {
         const nearbyTiles = this.nearbyTilesWithEqualColor(clickedTile);
 
         if (nearbyTiles.length == 0) {
-            clickedTile.getComponent("tile").noComboAnimation();
-
             return [];
         }
 
@@ -184,6 +182,7 @@ export default class StartGame extends cc.Component {
         const comboTiles = this.comboTiles(clickedTile);
 
         if (!comboTiles.length) {
+            clickedTile.getComponent("tile").noComboAnimation();
             return;
         }
 
@@ -205,7 +204,7 @@ export default class StartGame extends cc.Component {
         const moveLeft = this.maxMoves - this.totalMoves;
         this.score.setMovesLeft(moveLeft.toString());
         this.bar.setProgressByScore(this.scoreToWin, this.score.currentScore);
-        
+
         const gravityTiles = this.gravityTiles();
         const genTileInEmpty = this.genTileInEmpty();
 
