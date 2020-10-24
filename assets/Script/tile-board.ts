@@ -153,12 +153,8 @@ export default class StartGame extends cc.Component {
             let nextTile = stackTile.shift();
             let xTiles = this.xMarkTiles(nextTile);
             xTiles.forEach((xTile) => {
-                let inRem = stackRemove.some(function (tile) {
-                    return tile._id == xTile._id;
-                });
-                let inStack = stackTile.some((tile) => {
-                    return tile._id == xTile._id;
-                });
+                let inRem = stackRemove.some((tile) => tile._id == xTile._id);
+                let inStack = stackTile.some((tile) => tile._id == xTile._id);
 
                 if (!inRem && !inStack) {
                     stackTile.push(xTile);
