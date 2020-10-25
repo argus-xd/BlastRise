@@ -1,5 +1,4 @@
 const { ccclass, property } = cc._decorator;
-import tile from "./tile";
 
 @ccclass
 export default class Score extends cc.Component {
@@ -11,12 +10,13 @@ export default class Score extends cc.Component {
 
     currentScore = 0;
 
-    onLoad() {
-        this.scoreLabel.string = this.currentScore.toString();
-    }
+    onLoad() {}
 
     setMovesLeft(moves: string) {
         this.movesLabel.string = moves;
+    }
+    setScoreLabel(score, maxScore) {
+        this.scoreLabel.string = `${score} из ${maxScore}`;
     }
 
     addScoreWithAnimation(score, maxScore) {
@@ -29,7 +29,7 @@ export default class Score extends cc.Component {
                 {
                     progress: (s, e, c, t) => {
                         let num = Math.round(e * t);
-                        this.scoreLabel.string = `${num} из ${maxScore}`;
+                        this.setScoreLabel(num, maxScore);
                     },
                 }
             )

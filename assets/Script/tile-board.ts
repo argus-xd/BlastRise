@@ -42,6 +42,7 @@ export default class TileBoard extends cc.Component {
         this.score = this.node.getComponent("score");
         this.gamestatus = this.node.getComponent("game-status");
         this.score.setMovesLeft((this.maxMoves - this.totalMoves).toString());
+        this.score.setScoreLabel(this.score.currentScore, this.scoreToWin);
         this.fillBoardWithTiles();
     }
 
