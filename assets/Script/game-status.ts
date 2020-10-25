@@ -66,10 +66,10 @@ export default class GameStatus extends cc.Component {
         const maxLevel = parseInt(cc.sys.localStorage.getItem("maxLevel"));
         let currentLevel = parseInt(cc.sys.localStorage.getItem(sceneName));
 
-        if (maxLevel < currentLevel) currentLevel = 1;
+        let nextLevel = currentLevel + 1;
+        if (maxLevel < nextLevel) nextLevel = 1;
 
-        cc.director.loadScene(sceneName + currentLevel, () => {
-            let nextLevel = currentLevel + 1;
+        cc.director.loadScene(sceneName + nextLevel, () => {
             cc.sys.localStorage.setItem(sceneName, nextLevel);
         });
     }

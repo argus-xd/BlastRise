@@ -18,7 +18,7 @@ export default class Menu extends cc.Component {
         cc.sys.localStorage.setItem("maxLevel", this.maxLevel);
 
         let key = "board_level_";
-        cc.sys.localStorage.setItem(key, 2);
+        cc.sys.localStorage.setItem(key, 1);
 
         this.btnStart.on(cc.Node.EventType.TOUCH_END, this.startGame);
     }
