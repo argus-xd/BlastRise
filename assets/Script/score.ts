@@ -20,7 +20,10 @@ export default class Score extends cc.Component {
     }
     addScore(score: number) {
         this.currentScore += score;
-        var obj = { a: this.currentScore };
+    }
+
+    smoothAnimation() {
+        const obj = { a: this.currentScore };
         cc.tween(obj)
             .to(
                 0.25,

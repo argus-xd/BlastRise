@@ -189,7 +189,6 @@ export default class StartGame extends cc.Component {
         this.clickEventAction(true);
 
         const tilesAnimationPromsises = [];
-
         comboTiles.forEach((tile: cc.Node) => {
             let tileComp: tile = tile.getComponent("tile");
             let promise = tileComp.setPositionActionRemove(
@@ -197,8 +196,8 @@ export default class StartGame extends cc.Component {
             );
             tilesAnimationPromsises.push(promise);
         });
-
         await Promise.all(tilesAnimationPromsises);
+        this.score.smoothAnimation();
 
         this.totalMoves++;
         const moveLeft = this.maxMoves - this.totalMoves;
@@ -207,7 +206,6 @@ export default class StartGame extends cc.Component {
 
         const gravityTiles = this.gravityTiles();
         const genTileInEmpty = this.genTileInEmpty();
-
         let arrPropimesAwait = [gravityTiles, genTileInEmpty];
         await Promise.all(arrPropimesAwait);
 
