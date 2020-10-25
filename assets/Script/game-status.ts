@@ -9,13 +9,16 @@ export default class GameStatus extends cc.Component {
     fadaInDuration: number = 0.5;
 
     @property(cc.Node)
+    insideFrame: cc.Node = null;
+
+    @property(cc.Node)
     wining: cc.Node = null;
 
     @property(cc.Node)
     lose: cc.Node = null;
 
     @property(cc.Node)
-    alert: cc.Node = null;
+    endGameFrame: cc.Node = null;
 
     @property(cc.Node)
     btnWining: cc.Node = null;
@@ -24,7 +27,7 @@ export default class GameStatus extends cc.Component {
     BtnLose: cc.Node = null;
 
     endGame(status: number) {
-        this.alert.active = true;
+        this.endGameFrame.active = true;
 
         switch (status) {
             case EndGameType.wining:
@@ -41,14 +44,19 @@ export default class GameStatus extends cc.Component {
 
         let randAction = random.randomRangeInt(0, 2);
         if (randAction) {
-            let savePos = new cc.Vec3(this.alert.position);
-            this.alert.position = new cc.Vec3(savePos.x, savePos.y + 1000);
-            cc.tween(this.alert)
+            let savePos = new cc.Vec3(this.insideFrame.position);
+            this.insideFrame.position = new cc.Vec3(
+                savePos.x,
+                savePos.y + 1000
+            );
+            cc.tween(this.insideFrame)
                 .to(this.fadaInDuration, { position: savePos })
                 .start();
         } else {
-            this.alert.scale = 0;
-            cc.tween(this.alert).to(this.fadaInDuration, { scale: 1 }).start();
+            this.insideFrame.scale = 0;
+            cc.tween(this.insideFrame)
+                .to(this.fadaInDuration, { scale: 1 })
+                .start();
         }
         return true;
     }
