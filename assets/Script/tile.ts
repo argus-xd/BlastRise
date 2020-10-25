@@ -83,15 +83,19 @@ export default class Tile extends cc.Component {
         });
     }
 
+    weightedRandomTextureIndex() {
+        return mathRandom.weightedRand2(
+            Array.from(
+                { length: this.textureList.length },
+                () => 1 / this.textureList.length
+            )
+        );
+    }
+
     setSprite() {
-        const rand = mathRandom.weightedRand2({
-            0: 0.2,
-            1: 0.2,
-            2: 0.2,
-            3: 0.2,
-            4: 0.2,
-        });
-        const tileProperties = this.textureList[rand];
+        const textureIndex = this.weightedRandomTextureIndex();
+        const tileProperties = this.textureList[textureIndex];
+
         this.node.name = tileProperties.color;
         this.color = tileProperties.color;
         this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(

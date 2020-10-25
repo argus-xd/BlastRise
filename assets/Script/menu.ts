@@ -22,8 +22,4 @@ export default class Menu extends cc.Component {
 
         this.btnStart.on(cc.Node.EventType.TOUCH_END, this.startGame);
     }
-
-    /*  start () {   } */
-
-    // update (dt) {}
 }

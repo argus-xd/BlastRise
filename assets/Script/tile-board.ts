@@ -293,8 +293,4 @@ export default class TileBoard extends cc.Component {
             }
         }
     }
-
-    /*  start() {}
-
-    update(dt) {} */
 }

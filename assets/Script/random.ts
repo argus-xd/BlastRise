@@ -60,11 +60,12 @@ export function pseudoRandomRange(seed: number, min: number, max: number) {
 export function pseudoRandomRangeInt(seed: number, min: number, max: number) {
     return Math.floor(pseudoRandomRange(seed, min, max));
 }
+
 export function weightedRand2(spec) {
-    var i,
-        sum = 0,
-        r = Math.random();
-    for (i in spec) {
+    let sum = 0;
+    const r = Math.random();
+
+    for (let i = 0; i < spec.length; i++) {
         sum += spec[i];
         if (r <= sum) return i;
     }

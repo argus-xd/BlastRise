@@ -15,8 +15,4 @@ export default class ProgressBar extends cc.Component {
         const percent = currenScore / maxScore;
         cc.tween(this.bar).to(1, { progress: percent }).start();
     }
-
-    start() {}
-
-    /*  update(dt) {} */
 }

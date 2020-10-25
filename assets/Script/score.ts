@@ -19,11 +19,6 @@ export default class Score extends cc.Component {
         this.movesLabel.string = moves;
     }
 
-    addScore(score: number) {
-        this.currentScore += score;
-        this.scoreLabel.string = String(this.currentScore);
-    }
-
     addScoreWithAnimation(score) {
         this.currentScore += score;
         const obj = { a: this.currentScore };
@@ -40,8 +35,4 @@ export default class Score extends cc.Component {
             )
             .start();
     }
-
-    start() {}
-
-    // update (dt) {}
 }
