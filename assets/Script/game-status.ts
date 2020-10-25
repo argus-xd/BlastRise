@@ -64,7 +64,8 @@ export default class GameStatus extends cc.Component {
     nextLevel() {
         let key = "board_level_";
         let level = parseInt(cc.sys.localStorage.getItem(key));
-        if (!level) level = 2;
+        let maxLevel = parseInt(cc.sys.localStorage.getItem("maxLevel"));
+        if (maxLevel < level) level = 1;
         cc.director.loadScene(`${key}${level}`, () => {
             let nextLevel = level + 1;
             cc.sys.localStorage.setItem(key, nextLevel);
