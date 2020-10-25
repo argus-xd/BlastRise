@@ -19,7 +19,7 @@ export default class Score extends cc.Component {
         this.movesLabel.string = moves;
     }
 
-    addScoreWithAnimation(score) {
+    addScoreWithAnimation(score, maxScore) {
         this.currentScore += score;
         const obj = { a: this.currentScore };
         cc.tween(obj)
@@ -29,7 +29,7 @@ export default class Score extends cc.Component {
                 {
                     progress: (s, e, c, t) => {
                         let num = Math.round(e * t);
-                        this.scoreLabel.string = String(num);
+                        this.scoreLabel.string = `${num} из ${maxScore}`;
                     },
                 }
             )

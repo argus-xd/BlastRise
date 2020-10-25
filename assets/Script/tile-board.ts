@@ -211,8 +211,7 @@ export default class TileBoard extends cc.Component {
             tilesScoreSum += tileComp.score;
         });
 
-        this.score.addScoreWithAnimation(tilesScoreSum);
-        await Promise.all(tilesAnimationPromsises);
+        this.score.addScoreWithAnimation(tilesScoreSum, this.scoreToWin);
 
         this.totalMoves++;
         const moveLeft = this.maxMoves - this.totalMoves;
@@ -222,6 +221,7 @@ export default class TileBoard extends cc.Component {
             this.score.currentScore
         );
 
+        await Promise.all(tilesAnimationPromsises);
         await Promise.all([
             ...this.gravityTiles(),
             ...this.fillEmptyCellsWithTiles(),
