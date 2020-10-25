@@ -97,35 +97,37 @@ export default class TileBoard extends cc.Component {
         return tile;
     }
 
-    async genTileInEmpty() {
-        let sizeTile = this.tilePrefab.data.getContentSize();
-        let promisesArr = [];
+    fillEmptyCellsWithTiles() {
+        const tileSize = this.tilePrefab.data.getContentSize();
+        const newTilesAnimationPromises = [];
 
         for (let n = 0; n < this.boardSize.x; n++) {
             for (let m = 0; m < this.boardSize.y; m++) {
-                let checkTile: cc.Node = this.tileBoard[n][m];
-                if (!checkTile.active) {
-                    let pos = new cc.Vec2(
-                        sizeTile.height * m,
-                        sizeTile.width * 3
+                const tileIsActive: cc.Node = this.tileBoard[n][m].active;
+
+                if (!tileIsActive) {
+                    const pos = new cc.Vec2(
+                        tileSize.height * m,
+                        tileSize.width * 3
                     );
-                    let posMove = new cc.Vec2(
-                        sizeTile.height * m,
-                        sizeTile.width * -n
+                    const posMove = new cc.Vec2(
+                        tileSize.height * m,
+                        tileSize.width * -n
                     );
-                    let tile = this.newTile(pos);
-                    let prop: tile = tile.getComponent("tile");
-                    let promise = prop.setPositionAction(posMove);
-                    promisesArr.push(promise);
+
+                    const tile = this.newTile(pos);
+                    const prop: tile = tile.getComponent("tile");
+                    const promise = prop.setPositionAction(posMove);
+
+                    newTilesAnimationPromises.push(promise);
 
                     this.node.addChild(tile);
-
                     this.tileBoard[n][m] = tile;
                 }
             }
         }
 
-        await Promise.all(promisesArr);
+        return newTilesAnimationPromises;
     }
 
     nearbyTilesWithEqualColor(tile: cc.Node) {
@@ -220,36 +222,40 @@ export default class TileBoard extends cc.Component {
             this.score.currentScore
         );
 
-        const gravityTiles = this.gravityTiles();
-        const genTileInEmpty = this.genTileInEmpty();
-        let arrPropimesAwait = [gravityTiles, genTileInEmpty];
-        await Promise.all(arrPropimesAwait);
+        await Promise.all([
+            ...this.gravityTiles(),
+            ...this.fillEmptyCellsWithTiles(),
+        ]);
 
         this.enableClickEvents();
         this.checkEndGameConditions();
     }
 
-    async gravityTiles() {
-        let promisesArr = [];
+    gravityTiles() {
+        const gravityPromises = [];
+
         for (let n = 0; n <= this.boardSize.y - 1; n++) {
             let posToGrav = null;
 
             for (let m = this.boardSize.x - 1; m >= 0; m--) {
-                let tile: cc.Node = this.tileBoard[m][n];
+                const tile: cc.Node = this.tileBoard[m][n];
 
                 if (!tile.active && !posToGrav) {
                     posToGrav = m;
                     continue;
                 }
+
                 if (tile.active && posToGrav) {
-                    let move: cc.Node = this.tileBoard[m][n];
-                    let newpos = new cc.Vec2(
+                    const move: cc.Node = this.tileBoard[m][n];
+                    const newpos = new cc.Vec2(
                         move.height * n,
                         move.width * (-1 * posToGrav)
                     );
-                    let tileMove: tile = move.getComponent("tile");
-                    let propmis = tileMove.setPositionAction(newpos);
-                    promisesArr.push(propmis);
+
+                    const tileMove: tile = move.getComponent("tile");
+                    const propmise = tileMove.setPositionAction(newpos);
+
+                    gravityPromises.push(propmise);
 
                     this.tileBoard[posToGrav--][n] = this.tileBoard[m][n];
                     this.tileBoard[m][n] = cc.Node;
@@ -257,7 +263,7 @@ export default class TileBoard extends cc.Component {
             }
         }
 
-        await Promise.all(promisesArr);
+        return gravityPromises;
     }
 
     checkTileInBoard(tile, pos) {
