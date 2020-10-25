@@ -13,7 +13,6 @@ export default class StartGame extends cc.Component {
     @property(cc.Vec2)
     boardSize: cc.Vec2 = new cc.Vec2(5, 5);
 
-    @property(cc.Boolean)
     clickBlock: Boolean = false;
 
     @property(cc.Prefab)
