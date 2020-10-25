@@ -76,7 +76,6 @@ export default class Tile extends cc.Component {
                     { easing: "backIn" }
                 )
                 .call(() => {
-                    this.node.parent.emit("score", this.score);
                     this.node.destroy();
                     resolve();
                 })
@@ -101,16 +100,6 @@ export default class Tile extends cc.Component {
         this.score = tileProperties.score;
     }
 
-    tapTile() {
-        if (!this.board) {
-            this.board = this.node.parent.getComponent("tile-board");
-        }
-
-        if (!this.board.clickEventAction()) {
-            this.board.clickTile(this.node);
-        }
-    }
-
     noComboAnimation() {
         let rotate = cc
             .tween()
@@ -127,11 +116,5 @@ export default class Tile extends cc.Component {
         if (this.tileType == TileType.tile) {
             this.setSprite();
         }
-        this.node.on(cc.Node.EventType.TOUCH_END, this.tapTile.bind(this));
     }
-
-    start() {}
-
-    onDestroy() {}
-    // update (dt) {}
 }

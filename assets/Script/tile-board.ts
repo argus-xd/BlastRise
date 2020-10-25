@@ -2,16 +2,18 @@ const { ccclass, property } = cc._decorator;
 
 import tile from "./tile";
 import score from "./score";
-import bar from "./progress-bar";
+import ProgressBar from "./progress-bar";
 import gamestatus from "./game-status";
 import * as mathRandom from "./random";
 import { EndGameType } from "./endgametype";
 import { TileType } from "./tiletype";
 
 @ccclass
-export default class StartGame extends cc.Component {
+export default class TileBoard extends cc.Component {
     @property(cc.Vec2)
     boardSize: cc.Vec2 = new cc.Vec2(5, 5);
+
+    clickEventsDisabled: Boolean = false;
 
     clickBlock: Boolean = false;
 
@@ -30,60 +32,68 @@ export default class StartGame extends cc.Component {
     })
     scoreToWin = 1000;
 
-    mapTile = [];
-    bar: bar = null;
-    score: score = null;
-    gamestatus: gamestatus = null;
+    tileBoard = [];
+    progressBar: ProgressBar;
+    score: score;
+    gamestatus: gamestatus;
 
     onLoad() {
-        this.bar = this.node.getComponent("progress-bar");
+        this.progressBar = this.node.getComponent("progress-bar");
         this.score = this.node.getComponent("score");
         this.gamestatus = this.node.getComponent("game-status");
         this.score.setMovesLeft((this.maxMoves - this.totalMoves).toString());
-        this.createBoard();
-
-        this.node.on("score", (scoreCount: number) => {
-            this.score.addScore(scoreCount);
-        });
+        this.fillBoardWithTiles();
     }
 
-    clickEventAction(state: Boolean = null) {
-        if (state != null) this.clickBlock = state;
-        return this.clickBlock;
+    disableClickEvents() {
+        this.clickEventsDisabled = true;
     }
 
-    checkProgress() {
-        if (
-            this.totalMoves == this.maxMoves &&
-            this.score.currentScore < this.scoreToWin
-        ) {
-            this.gamestatus.showWindowEndGame(EndGameType.lose);
-            this.clickEventAction(true);
-        }
+    enableClickEvents() {
+        this.clickEventsDisabled = false;
+    }
 
-        if (this.score.currentScore >= this.scoreToWin) {
-            this.gamestatus.showWindowEndGame(EndGameType.wining);
-            this.clickEventAction(true);
+    checkEndGameConditions() {
+        const maxMovesReached = this.totalMoves >= this.maxMoves;
+        const maxScoreReached = this.score.currentScore >= this.scoreToWin;
+
+        if (maxMovesReached || maxScoreReached) {
+            const endGameType = maxScoreReached
+                ? EndGameType.wining
+                : EndGameType.lose;
+            this.gamestatus.showEndGameWindow(endGameType);
+            this.disableClickEvents();
         }
     }
 
-    createBoard() {
-        let tileSize = this.tilePrefab.data.getContentSize();
-        for (let n = 0; n < this.boardSize.x; n++) {
-            this.mapTile.push([]);
-            for (let m = 0; m < this.boardSize.y; m++) {
-                let pos = new cc.Vec2(tileSize.height * m, tileSize.width * -n);
+    fillBoardWithTiles() {
+        const tileSize = this.tilePrefab.data.getContentSize();
+
+        for (let row = 0; row < this.boardSize.x; row++) {
+            this.tileBoard.push([]);
+            for (let col = 0; col < this.boardSize.y; col++) {
+                let pos = new cc.Vec2(
+                    tileSize.height * col,
+                    tileSize.width * -row
+                );
                 let tile = this.newTile(pos);
-                this.node.addChild(tile);
 
-                this.mapTile[n].push(tile);
+                this.node.addChild(tile);
+                this.tileBoard[row].push(tile);
             }
         }
     }
 
-    newTile(position) {
-        const tile = cc.instantiate(this.tilePrefab);
+    newTile(position: cc.Vec2) {
+        const tile: cc.Node = cc.instantiate(this.tilePrefab);
         tile.setPosition(position);
+
+        tile.on(cc.Node.EventType.TOUCH_END, () => {
+            if (!this.clickEventsDisabled) {
+                this.clickTileAction(tile);
+            }
+        });
+
         return tile;
     }
 
@@ -93,7 +103,7 @@ export default class StartGame extends cc.Component {
 
         for (let n = 0; n < this.boardSize.x; n++) {
             for (let m = 0; m < this.boardSize.y; m++) {
-                let checkTile: cc.Node = this.mapTile[n][m];
+                let checkTile: cc.Node = this.tileBoard[n][m];
                 if (!checkTile.active) {
                     let pos = new cc.Vec2(
                         sizeTile.height * m,
@@ -110,7 +120,7 @@ export default class StartGame extends cc.Component {
 
                     this.node.addChild(tile);
 
-                    this.mapTile[n][m] = tile;
+                    this.tileBoard[n][m] = tile;
                 }
             }
         }
@@ -133,7 +143,7 @@ export default class StartGame extends cc.Component {
             const tileExists = this.checkTileInBoard(tile, [x, y]);
 
             if (tileExists) {
-                const tileForCheck: cc.Node = this.mapTile[x][y];
+                const tileForCheck: cc.Node = this.tileBoard[x][y];
 
                 if (this.compareColors(tile, tileForCheck)) {
                     foundTiles.push(tileForCheck);
@@ -156,18 +166,18 @@ export default class StartGame extends cc.Component {
 
         while (nearbyTiles.length > 0) {
             let nextTile = nearbyTiles.shift();
-            let xTiles = this.nearbyTilesWithEqualColor(nextTile);
+            let nerabyToNextTile = this.nearbyTilesWithEqualColor(nextTile);
 
-            xTiles.forEach((xTile) => {
+            nerabyToNextTile.forEach((nearbyTile) => {
                 const inCombo = comboTiles.some(
-                    (tile) => tile._id == xTile._id
+                    (tile) => tile._id == nearbyTile._id
                 );
                 const inStack = nearbyTiles.some(
-                    (tile) => tile._id == xTile._id
+                    (tile) => tile._id == nearbyTile._id
                 );
 
                 if (!inCombo && !inStack) {
-                    nearbyTiles.push(xTile);
+                    nearbyTiles.push(nearbyTile);
                 }
             });
 
@@ -177,7 +187,7 @@ export default class StartGame extends cc.Component {
         return comboTiles;
     }
 
-    async clickTile(clickedTile: cc.Node) {
+    async clickTileAction(clickedTile: cc.Node) {
         const comboTiles = this.comboTiles(clickedTile);
 
         if (!comboTiles.length) {
@@ -185,31 +195,38 @@ export default class StartGame extends cc.Component {
             return;
         }
 
-        this.clickEventAction(true);
+        this.disableClickEvents();
 
+        let tilesScoreSum = 0;
         const tilesAnimationPromsises = [];
+
         comboTiles.forEach((tile: cc.Node) => {
-            let tileComp: tile = tile.getComponent("tile");
-            let promise = tileComp.setPositionActionRemove(
-                clickedTile.position
-            );
+            const tileComp: tile = tile.getComponent("tile");
+            const promise = tile
+                .getComponent("tile")
+                .setPositionActionRemove(clickedTile.position);
             tilesAnimationPromsises.push(promise);
+            tilesScoreSum += tileComp.score;
         });
+
+        this.score.addScoreWithAnimation(tilesScoreSum);
         await Promise.all(tilesAnimationPromsises);
-        this.score.smoothAnimation();
 
         this.totalMoves++;
         const moveLeft = this.maxMoves - this.totalMoves;
         this.score.setMovesLeft(moveLeft.toString());
-        this.bar.setProgressByScore(this.scoreToWin, this.score.currentScore);
+        this.progressBar.setProgressByScore(
+            this.scoreToWin,
+            this.score.currentScore
+        );
 
         const gravityTiles = this.gravityTiles();
         const genTileInEmpty = this.genTileInEmpty();
         let arrPropimesAwait = [gravityTiles, genTileInEmpty];
         await Promise.all(arrPropimesAwait);
 
-        this.clickEventAction(false);
-        this.checkProgress();
+        this.enableClickEvents();
+        this.checkEndGameConditions();
     }
 
     async gravityTiles() {
@@ -218,14 +235,14 @@ export default class StartGame extends cc.Component {
             let posToGrav = null;
 
             for (let m = this.boardSize.x - 1; m >= 0; m--) {
-                let tile: cc.Node = this.mapTile[m][n];
+                let tile: cc.Node = this.tileBoard[m][n];
 
                 if (!tile.active && !posToGrav) {
                     posToGrav = m;
                     continue;
                 }
                 if (tile.active && posToGrav) {
-                    let move: cc.Node = this.mapTile[m][n];
+                    let move: cc.Node = this.tileBoard[m][n];
                     let newpos = new cc.Vec2(
                         move.height * n,
                         move.width * (-1 * posToGrav)
@@ -234,8 +251,8 @@ export default class StartGame extends cc.Component {
                     let propmis = tileMove.setPositionAction(newpos);
                     promisesArr.push(propmis);
 
-                    this.mapTile[posToGrav--][n] = this.mapTile[m][n];
-                    this.mapTile[m][n] = cc.Node;
+                    this.tileBoard[posToGrav--][n] = this.tileBoard[m][n];
+                    this.tileBoard[m][n] = cc.Node;
                 }
             }
         }
@@ -246,10 +263,10 @@ export default class StartGame extends cc.Component {
     checkTileInBoard(tile, pos) {
         let x = pos[0];
         let y = pos[1];
-        if (this.mapTile[x] == null) {
+        if (this.tileBoard[x] == null) {
             return false;
         }
-        if (this.mapTile[x][y] == null) {
+        if (this.tileBoard[x][y] == null) {
             return false;
         }
         return tile;
@@ -264,7 +281,7 @@ export default class StartGame extends cc.Component {
     getTilePosition(findTile: cc.Node) {
         for (let n = 0; n < this.boardSize.x; n++) {
             for (let m = 0; m < this.boardSize.y; m++) {
-                if (this.mapTile[n][m] == findTile) {
+                if (this.tileBoard[n][m] == findTile) {
                     return [n, m];
                 }
             }

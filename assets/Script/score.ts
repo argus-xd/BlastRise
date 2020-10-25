@@ -18,11 +18,14 @@ export default class Score extends cc.Component {
     setMovesLeft(moves: string) {
         this.movesLabel.string = moves;
     }
+
     addScore(score: number) {
         this.currentScore += score;
+        this.scoreLabel.string = String(this.currentScore);
     }
 
-    smoothAnimation() {
+    addScoreWithAnimation(score) {
+        this.currentScore += score;
         const obj = { a: this.currentScore };
         cc.tween(obj)
             .to(
