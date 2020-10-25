@@ -57,12 +57,12 @@ export default class StartGame extends cc.Component {
             this.totalMoves == this.maxMoves &&
             this.score.currentScore < this.scoreToWin
         ) {
-            this.gamestatus.endGame(EndGameType.lose);
+            this.gamestatus.showWindowEndGame(EndGameType.lose);
             this.clickEventAction(true);
         }
 
         if (this.score.currentScore >= this.scoreToWin) {
-            this.gamestatus.endGame(EndGameType.wining);
+            this.gamestatus.showWindowEndGame(EndGameType.wining);
             this.clickEventAction(true);
         }
     }

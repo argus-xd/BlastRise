@@ -26,7 +26,7 @@ export default class GameStatus extends cc.Component {
     @property(cc.Node)
     BtnLose: cc.Node = null;
 
-    endGame(status: number) {
+    showWindowEndGame(status: number) {
         this.endGameFrame.active = true;
 
         switch (status) {
