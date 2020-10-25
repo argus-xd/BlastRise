@@ -62,14 +62,18 @@ export default class GameStatus extends cc.Component {
     }
 
     nextLevel() {
-        let key = "board_level";
-        let level = cc.sys.localStorage.getItem(key);
-        cc.director.loadScene(`board_level_${level}`, () => {
-            cc.sys.localStorage.setItem(key, level++);
+        let key = "board_level_";
+        let level = parseInt(cc.sys.localStorage.getItem(key));
+        if (!level) level = 2;
+        cc.director.loadScene(`${key}${level}`, () => {
+            let nextLevel = level + 1;
+            cc.sys.localStorage.setItem(key, nextLevel);
         });
     }
     restartGame() {
-        cc.game.restart();
+        const key = "board_level_";
+        let level = cc.sys.localStorage.getItem(key);
+        cc.director.loadScene(key + level);
     }
     onLoad() {
         this.wining.active = false;

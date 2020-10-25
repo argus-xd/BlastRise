@@ -10,10 +10,7 @@ export default class Menu extends cc.Component {
     }
 
     onLoad() {
-        let key = "board_level_";
-        let parameter = "1";
-        cc.sys.localStorage.setItem(key, parameter);
-
+        cc.sys.localStorage.clear();
         cc.director.preloadScene("board_level_1");
         this.btnStart.on(cc.Node.EventType.TOUCH_END, this.startGame);
     }

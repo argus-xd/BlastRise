@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "endGameBtn",
+    "_name": "btn",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -52,8 +52,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -35.999,
-        -127.385,
+        0,
+        -20.013,
         0,
         0,
         0,
@@ -227,8 +227,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Новая игра",
-    "_N$string": "Новая игра",
+    "_string": "Рестарт",
+    "_N$string": "Рестарт",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
@@ -340,9 +340,7 @@
     "_grayMaterial": null,
     "duration": 0.1,
     "zoomScale": 1.2,
-    "clickEvents": [
-      null
-    ],
+    "clickEvents": [],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
     "_N$transition": 2,
