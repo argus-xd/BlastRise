@@ -4,9 +4,7 @@ import tile from "./tile";
 import score from "./score";
 import ProgressBar from "./progress-bar";
 import gamestatus from "./game-status";
-import * as mathRandom from "./random";
 import { EndGameType } from "./endgametype";
-import { TileType } from "./tiletype";
 
 @ccclass
 export default class TileBoard extends cc.Component {
