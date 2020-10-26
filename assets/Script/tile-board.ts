@@ -78,17 +78,16 @@ export default class TileBoard extends cc.Component {
         }
     }
 
-    fillBoardWithTiles() {
+    async fillBoardWithTiles() {
         for (let row = 0; row < this.boardSize.x; row++) {
             this.tileBoard.push([]);
             for (let col = 0; col < this.boardSize.y; col++) {
-                const tilePositin = this.tileSize.scale(new cc.Vec2(col, -row));
-                const tile = this.newTile(tilePositin);
-                tile.zIndex = -row;
-                this.node.addChild(tile);
-                this.tileBoard[row].push(tile);
+                this.tileBoard[row].push((new cc.Node().active = false));
             }
         }
+        this.disableClickEvents();
+        await this.fillEmptyCellsWithTiles();
+        this.enableClickEvents();
     }
 
     newTile(position: cc.Vec2) {
@@ -114,15 +113,13 @@ export default class TileBoard extends cc.Component {
                 if (!tileIsActive) {
                     const posShow = this.tileSize.scale(new cc.Vec2(m, 3));
                     const tile = this.newTile(posShow);
-                    tile.zIndex = -n;
                     const prop: tile = tile.getComponent("tile");
-
                     const pos = this.tileSize.scale(new cc.Vec2(m, -n));
                     const promise = prop.setPositionAction(pos);
-
                     newTilesAnimationPromises.push(promise);
 
                     this.node.addChild(tile);
+                    tile.zIndex = -n;
                     this.tileBoard[n][m] = tile;
                 }
             }
@@ -252,7 +249,7 @@ export default class TileBoard extends cc.Component {
                         new cc.Vec2(n, -posToGrav)
                     );
                     const tileMove: tile = move.getComponent("tile");
-                    tile.zIndex = -n;
+                    tile.zIndex = -m;
                     const propmise = tileMove.setPositionAction(newpos);
 
                     gravityPromises.push(propmise);
