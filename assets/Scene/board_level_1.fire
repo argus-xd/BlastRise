@@ -257,11 +257,16 @@
     "_enabled": true,
     "boardSize": {
       "__type__": "cc.Vec2",
-      "x": 11,
-      "y": 10
+      "x": 10,
+      "y": 11
     },
     "tilePrefab": {
       "__uuid__": "19d74b94-4b30-41d4-8e59-2af92a9bf97e"
+    },
+    "tileOffset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": -5
     },
     "maxMoves": 10,
     "scoreToWin": 250,

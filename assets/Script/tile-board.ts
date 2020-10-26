@@ -18,6 +18,9 @@ export default class TileBoard extends cc.Component {
     @property(cc.Prefab)
     tilePrefab: cc.Prefab = null;
 
+    @property(cc.Vec2)
+    tileOffset: cc.Vec2 = new cc.Vec2(0, 0);
+
     totalMoves = 0;
 
     @property({
@@ -30,6 +33,7 @@ export default class TileBoard extends cc.Component {
     })
     scoreToWin = 1000;
 
+    tileSize: cc.Vec2;
     tileBoard = [];
     progressBar: ProgressBar;
     score: score;
@@ -41,6 +45,15 @@ export default class TileBoard extends cc.Component {
         this.gamestatus = this.node.getComponent("game-status");
         this.score.setMovesLeft((this.maxMoves - this.totalMoves).toString());
         this.score.setScoreLabel(this.score.currentScore, this.scoreToWin);
+
+        this.tileSize = new cc.Vec2(
+            this.tilePrefab.data.getContentSize().width,
+            this.tilePrefab.data.getContentSize().height
+        );
+        if (this.tileOffset.len() > 0) {
+            this.tileSize = this.tileSize.add(this.tileOffset);
+        }
+
         this.fillBoardWithTiles();
     }
 
@@ -66,17 +79,12 @@ export default class TileBoard extends cc.Component {
     }
 
     fillBoardWithTiles() {
-        const tileSize = this.tilePrefab.data.getContentSize();
-
         for (let row = 0; row < this.boardSize.x; row++) {
             this.tileBoard.push([]);
             for (let col = 0; col < this.boardSize.y; col++) {
-                let pos = new cc.Vec2(
-                    tileSize.height * col,
-                    tileSize.width * -row
-                );
-                let tile = this.newTile(pos);
-
+                const tilePositin = this.tileSize.scale(new cc.Vec2(col, -row));
+                const tile = this.newTile(tilePositin);
+                tile.zIndex = -row;
                 this.node.addChild(tile);
                 this.tileBoard[row].push(tile);
             }
@@ -97,7 +105,6 @@ export default class TileBoard extends cc.Component {
     }
 
     fillEmptyCellsWithTiles() {
-        const tileSize = this.tilePrefab.data.getContentSize();
         const newTilesAnimationPromises = [];
 
         for (let n = 0; n < this.boardSize.x; n++) {
@@ -105,18 +112,13 @@ export default class TileBoard extends cc.Component {
                 const tileIsActive: cc.Node = this.tileBoard[n][m].active;
 
                 if (!tileIsActive) {
-                    const pos = new cc.Vec2(
-                        tileSize.height * m,
-                        tileSize.width * 3
-                    );
-                    const posMove = new cc.Vec2(
-                        tileSize.height * m,
-                        tileSize.width * -n
-                    );
-
-                    const tile = this.newTile(pos);
+                    const posShow = this.tileSize.scale(new cc.Vec2(m, 3));
+                    const tile = this.newTile(posShow);
+                    tile.zIndex = -n;
                     const prop: tile = tile.getComponent("tile");
-                    const promise = prop.setPositionAction(posMove);
+
+                    const pos = this.tileSize.scale(new cc.Vec2(m, -n));
+                    const promise = prop.setPositionAction(pos);
 
                     newTilesAnimationPromises.push(promise);
 
@@ -246,12 +248,11 @@ export default class TileBoard extends cc.Component {
 
                 if (tile.active && posToGrav) {
                     const move: cc.Node = this.tileBoard[m][n];
-                    const newpos = new cc.Vec2(
-                        move.height * n,
-                        move.width * (-1 * posToGrav)
+                    const newpos = this.tileSize.scale(
+                        new cc.Vec2(n, -posToGrav)
                     );
-
                     const tileMove: tile = move.getComponent("tile");
+                    tile.zIndex = -n;
                     const propmise = tileMove.setPositionAction(newpos);
 
                     gravityPromises.push(propmise);
