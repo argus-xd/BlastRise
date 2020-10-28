@@ -25,7 +25,7 @@ export default class BoosterBomb extends Booster {
             tile.position,
             this.tileBoard.bombPrefab
         );
-
+        tileBomb.getComponent("tile").score = tileProp.score;
         this.tileBoard.tileBoard[x][y].destroy();
         this.tileBoard.tileBoard[x][y] = tileBomb;
         this.tileBoard.node.addChild(tileBomb);
