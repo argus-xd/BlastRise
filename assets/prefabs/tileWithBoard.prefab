@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "tileWithBoard",
+    "_name": "tileWithBoard - 001",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -51,8 +51,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -55.651,
-        274.571,
+        -181,
+        269,
         0,
         0,
         0,
@@ -109,15 +109,18 @@
     "_id": ""
   },
   {
-    "__type__": "35bdaHAfSdKvJgSnnhdQRw0",
+    "__type__": "fe185HXImxP0rpGbt5hiyIz",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "color": "",
-    "score": 0,
+    "tileType": 0,
+    "durationActionRemove": 0.4,
+    "durationActionFadeIn": 0.4,
+    "durationActionFadeOut": 0.4,
+    "durationMoveTo": 0.4,
     "textureList": [
       {
         "__id__": 4
@@ -135,15 +138,9 @@
         "__id__": 8
       }
     ],
+    "score": 0,
+    "color": "",
     "_id": ""
-  },
-  {
-    "__type__": "ccTile",
-    "color": "blue",
-    "score": 10,
-    "texture": {
-      "__uuid__": "0a03304c-fa32-4725-a9b9-9cdd6da85670"
-    }
   },
   {
     "__type__": "ccTile",
@@ -155,18 +152,26 @@
   },
   {
     "__type__": "ccTile",
-    "color": "red",
-    "score": 10,
-    "texture": {
-      "__uuid__": "67c5f663-be55-4854-9b4d-a99545fec38a"
-    }
-  },
-  {
-    "__type__": "ccTile",
     "color": "purple",
     "score": 10,
     "texture": {
       "__uuid__": "9715007a-63c6-4d1f-9eef-1ac42adf9003"
+    }
+  },
+  {
+    "__type__": "ccTile",
+    "color": "blue",
+    "score": 10,
+    "texture": {
+      "__uuid__": "0a03304c-fa32-4725-a9b9-9cdd6da85670"
+    }
+  },
+  {
+    "__type__": "ccTile",
+    "color": "red",
+    "score": 10,
+    "texture": {
+      "__uuid__": "67c5f663-be55-4854-9b4d-a99545fec38a"
     }
   },
   {
@@ -183,7 +188,7 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "19d74b94-4b30-41d4-8e59-2af92a9bf97e"
+      "__uuid__": "797572f3-cd8f-4a53-9b3d-6e46d468b323"
     },
     "fileId": "",
     "sync": false

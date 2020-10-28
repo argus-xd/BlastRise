@@ -5,18 +5,24 @@ import score from "./score";
 import ProgressBar from "./progress-bar";
 import gamestatus from "./game-status";
 import { EndGameType } from "./endgametype";
+import { TileType } from "./tiletype";
+import Booster from "./booster";
 
 @ccclass
 export default class TileBoard extends cc.Component {
     @property(cc.Vec2)
     boardSize: cc.Vec2 = new cc.Vec2(5, 5);
 
+    clickEventsDisabledBuster: Boolean = false;
     clickEventsDisabled: Boolean = false;
 
     clickBlock: Boolean = false;
 
     @property(cc.Prefab)
     tilePrefab: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    bombPrefab: cc.Prefab = null;
 
     @property(cc.Vec2)
     tileOffset: cc.Vec2 = new cc.Vec2(0, 0);
@@ -32,12 +38,12 @@ export default class TileBoard extends cc.Component {
         type: cc.Integer,
     })
     scoreToWin = 1000;
-
     tileSize: cc.Vec2;
     tileBoard = [];
     progressBar: ProgressBar;
     score: score;
     gamestatus: gamestatus;
+    booster: Booster;
 
     onLoad() {
         this.progressBar = this.node.getComponent("progress-bar");
@@ -89,9 +95,15 @@ export default class TileBoard extends cc.Component {
         await this.fillEmptyCellsWithTiles();
         this.enableClickEvents();
     }
+    randTile() {
+        if (Math.random() < 0.2 && this.totalMoves > 0) {
+            return this.bombPrefab;
+        }
+        return this.tilePrefab;
+    }
 
-    newTile(position: cc.Vec2) {
-        const tile: cc.Node = cc.instantiate(this.tilePrefab);
+    newTile(position: cc.Vec2 | cc.Vec3, prefab: cc.Prefab = null) {
+        const tile: cc.Node = cc.instantiate(prefab || this.tilePrefab);
         tile.setPosition(position);
 
         tile.on(cc.Node.EventType.TOUCH_END, () => {
@@ -140,7 +152,7 @@ export default class TileBoard extends cc.Component {
         ];
 
         nearbyTilesPositions.forEach(([x, y]) => {
-            const tileExists = this.checkTileInBoard(tile, [x, y]);
+            const tileExists = this.checkTileInBoard([x, y]);
 
             if (tileExists) {
                 const tileForCheck: cc.Node = this.tileBoard[x][y];
@@ -151,6 +163,22 @@ export default class TileBoard extends cc.Component {
             }
         });
 
+        return foundTiles;
+    }
+
+    tilesInRadius(tile: cc.Node, radius = 1) {
+        const pos = this.getTilePosition(tile);
+        const foundTiles = [];
+
+        for (let x = -radius; x <= radius; x++) {
+            for (let y = -radius; y <= radius; y++) {
+                const tileFound = this.checkTileInBoard([
+                    pos[0] + x,
+                    pos[1] + y,
+                ]);
+                if (tileFound) foundTiles.push(tileFound);
+            }
+        }
         return foundTiles;
     }
 
@@ -187,39 +215,67 @@ export default class TileBoard extends cc.Component {
         return comboTiles;
     }
 
-    async clickTileAction(clickedTile: cc.Node) {
-        const comboTiles = this.comboTiles(clickedTile);
+    affectedMapTiles() {
+        return this.tileBoard.reduce((allAffectedTiles, row) => {
+            const affectedTilesInRow = row.filter((tile) => {
+                return tile.getComponent("tile").affected;
+            });
+            return [...allAffectedTiles, ...affectedTilesInRow];
+        }, []);
+    }
 
-        if (!comboTiles.length) {
-            clickedTile.getComponent("tile").noComboAnimation();
+    async clickTileAction(actionTile: cc.Node) {
+        this.disableClickEvents();
+
+        if (
+            this.booster &&
+            this.booster.isActivated &&
+            this.booster.interactWithTiles
+        ) {
+            actionTile = this.booster.tileClickAction(actionTile);
+        }
+
+        const tile: tile = actionTile.getComponent("tile");
+        tile.action(this);
+
+        const affectedMapTiles = this.affectedMapTiles().map((tile) =>
+            tile.getComponent("tile")
+        );
+
+        if (!affectedMapTiles.length) {
+            this.enableClickEvents();
+            tile.noComboAnimation();
             return;
         }
 
-        this.disableClickEvents();
+        this.movesLeft();
 
-        let tilesScoreSum = 0;
-        const tilesAnimationPromsises = [];
+        const tilesScoreSum = affectedMapTiles.reduce(
+            (totalScore, tile) => totalScore + tile.score,
+            0
+        );
 
-        comboTiles.forEach((tile: cc.Node) => {
-            const tileComp: tile = tile.getComponent("tile");
-            const promise = tile
-                .getComponent("tile")
-                .setPositionActionRemove(clickedTile.position);
-            tilesAnimationPromsises.push(promise);
-            tilesScoreSum += tileComp.score;
-        });
+        if (tile.tileType == TileType.tile && tilesScoreSum > 30) {
+            const [x, y] = this.getTilePosition(actionTile);
+
+            const tileBomb = this.newTile(actionTile.position, this.bombPrefab);
+
+            this.node.addChild(tileBomb);
+            this.tileBoard[x][y] = tileBomb;
+        }
 
         this.score.addScoreWithAnimation(tilesScoreSum, this.scoreToWin);
-
-        this.totalMoves++;
-        const moveLeft = this.maxMoves - this.totalMoves;
-        this.score.setMovesLeft(moveLeft.toString());
         this.progressBar.setProgressByScore(
             this.scoreToWin,
             this.score.currentScore
         );
 
-        await Promise.all(tilesAnimationPromsises);
+        await Promise.all(
+            affectedMapTiles.map((tile) =>
+                tile.setPositionActionRemove(actionTile.position)
+            )
+        );
+
         await Promise.all([
             ...this.gravityTiles(),
             ...this.fillEmptyCellsWithTiles(),
@@ -227,6 +283,12 @@ export default class TileBoard extends cc.Component {
 
         this.enableClickEvents();
         this.checkEndGameConditions();
+    }
+
+    movesLeft() {
+        this.totalMoves++;
+        const moveLeft = this.maxMoves - this.totalMoves;
+        this.score.setMovesLeft(moveLeft.toString());
     }
 
     gravityTiles() {
@@ -237,7 +299,6 @@ export default class TileBoard extends cc.Component {
 
             for (let m = this.boardSize.x - 1; m >= 0; m--) {
                 const tile: cc.Node = this.tileBoard[m][n];
-
                 if (!tile.active && !posToGrav) {
                     posToGrav = m;
                     continue;
@@ -249,21 +310,20 @@ export default class TileBoard extends cc.Component {
                         new cc.Vec2(n, -posToGrav)
                     );
                     const tileMove: tile = move.getComponent("tile");
-                    tile.zIndex = -m;
                     const propmise = tileMove.setPositionAction(newpos);
 
                     gravityPromises.push(propmise);
 
                     this.tileBoard[posToGrav--][n] = this.tileBoard[m][n];
                     this.tileBoard[m][n] = cc.Node;
+                    tile.zIndex = -posToGrav;
                 }
             }
         }
-
         return gravityPromises;
     }
 
-    checkTileInBoard(tile, pos) {
+    checkTileInBoard(pos) {
         let x = pos[0];
         let y = pos[1];
         if (this.tileBoard[x] == null) {
@@ -272,7 +332,7 @@ export default class TileBoard extends cc.Component {
         if (this.tileBoard[x][y] == null) {
             return false;
         }
-        return tile;
+        return this.tileBoard[x][y];
     }
 
     compareColors(selectTile: cc.Node, matchTile: cc.Node) {

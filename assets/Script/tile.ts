@@ -1,46 +1,28 @@
 const { ccclass, property } = cc._decorator;
-import * as mathRandom from "./random";
-import startGame from "./tile-board";
 import { TileType } from "./tiletype";
+import TileBoard from "./tile-board";
 
-@ccclass("ccTile")
-class ccTile {
-    @property(cc.String)
-    color: string = "";
-
-    @property(cc.Integer)
-    score = 10;
-
-    @property(cc.Texture2D)
-    texture: cc.Texture2D = null;
-}
 @ccclass
 export default class Tile extends cc.Component {
     @property({ type: cc.Enum(TileType) })
     tileType: TileType = TileType.tile;
 
-    @property
-    color: string = "";
-
-    @property
+    @property(cc.Texture2D)
+    texture: cc.Texture2D = null;
     score = 0;
-
     @property
     durationActionRemove = 0.4;
 
     @property
     durationActionFadeIn = 0.4;
 
+    affected: boolean = false;
+
     @property
     durationActionFadeOut = 0.4;
 
     @property
     durationMoveTo = 0.4;
-
-    board: startGame = null;
-
-    @property(ccTile)
-    public textureList: ccTile[] = [];
 
     setPositionAction(position, time: Number = null, showIn = false) {
         return new Promise((resolve) => {
@@ -62,7 +44,9 @@ export default class Tile extends cc.Component {
             );
         });
     }
-    setPositionActionRemove(position, showIn = false) {
+
+    setPositionActionRemove(position = null, showIn = false) {
+        position = position || this.node.position;
         return new Promise((resolve) => {
             if (showIn) {
                 this.node.opacity = 99;
@@ -77,31 +61,10 @@ export default class Tile extends cc.Component {
                 )
                 .call(() => {
                     this.node.destroy();
-                    resolve();
+                    resolve(this.node);
                 })
                 .start();
         });
-    }
-
-    weightedRandomTextureIndex() {
-        return mathRandom.weightedRand2(
-            Array.from(
-                { length: this.textureList.length },
-                () => 1 / this.textureList.length
-            )
-        );
-    }
-
-    setSprite() {
-        const textureIndex = this.weightedRandomTextureIndex();
-        const tileProperties = this.textureList[textureIndex];
-
-        this.node.name = tileProperties.color;
-        this.color = tileProperties.color;
-        this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
-            tileProperties.texture
-        );
-        this.score = tileProperties.score;
     }
 
     noComboAnimation() {
@@ -116,9 +79,16 @@ export default class Tile extends cc.Component {
             .to(0.08, { rotation: 0 })
             .start();
     }
-    onLoad() {
-        if (this.tileType == TileType.tile) {
-            this.setSprite();
+    setSprite() {
+        this.node.getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(
+            this.texture
+        );
+    }
+    action(board: TileBoard) {}
+
+    affect(board: TileBoard) {
+        if (!this.affected) {
+            this.affected = true;
         }
     }
 }

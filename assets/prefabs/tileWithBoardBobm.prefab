@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "tileWithBoard",
+    "_name": "tileWithBoardBobm",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -27,7 +27,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 9
+      "__id__": 4
     },
     "_opacity": 255,
     "_color": {
@@ -51,8 +51,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -240,
-        344,
+        -149,
+        236,
         0,
         0,
         0,
@@ -92,7 +92,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a8af785-9293-414b-91d7-f844b63b316f"
+      "__uuid__": "604d8ea1-b14b-47e1-a2e0-c23f045f21cf"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -109,77 +109,20 @@
     "_id": ""
   },
   {
-    "__type__": "35bdaHAfSdKvJgSnnhdQRw0",
+    "__type__": "5c9beKjuxBLjp40OkirfJc0",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "color": "",
-    "score": 0,
+    "tileType": 1,
+    "texture": null,
     "durationActionRemove": 0.4,
     "durationActionFadeIn": 0.4,
     "durationActionFadeOut": 0.4,
     "durationMoveTo": 0.4,
-    "textureList": [
-      {
-        "__id__": 4
-      },
-      {
-        "__id__": 5
-      },
-      {
-        "__id__": 6
-      },
-      {
-        "__id__": 7
-      },
-      {
-        "__id__": 8
-      }
-    ],
     "_id": ""
-  },
-  {
-    "__type__": "ccTile",
-    "color": "blue",
-    "score": 10,
-    "texture": {
-      "__uuid__": "0a03304c-fa32-4725-a9b9-9cdd6da85670"
-    }
-  },
-  {
-    "__type__": "ccTile",
-    "color": "green",
-    "score": 10,
-    "texture": {
-      "__uuid__": "48024ecb-4578-444a-b070-9a1098aada4d"
-    }
-  },
-  {
-    "__type__": "ccTile",
-    "color": "red",
-    "score": 10,
-    "texture": {
-      "__uuid__": "67c5f663-be55-4854-9b4d-a99545fec38a"
-    }
-  },
-  {
-    "__type__": "ccTile",
-    "color": "purple",
-    "score": 10,
-    "texture": {
-      "__uuid__": "9715007a-63c6-4d1f-9eef-1ac42adf9003"
-    }
-  },
-  {
-    "__type__": "ccTile",
-    "color": "yellow",
-    "score": 10,
-    "texture": {
-      "__uuid__": "3ac0266f-c2a2-4708-a001-442a0907eefb"
-    }
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -187,7 +130,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "2cb78780-956c-48b9-ba6d-9e40dbfc082b"
     },
     "fileId": "",
     "sync": false
