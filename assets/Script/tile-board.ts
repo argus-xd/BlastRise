@@ -141,14 +141,14 @@ export default class TileBoard extends cc.Component {
     }
 
     nearbyTilesWithEqualColor(tile: cc.Node) {
-        const pos = this.getTilePosition(tile);
+        const [posX, posY] = this.getTilePosition(tile);
         const foundTiles = [];
 
         const nearbyTilesPositions = [
-            [pos[0], pos[1] + 1],
-            [pos[0], pos[1] - 1],
-            [pos[0] + 1, pos[1]],
-            [pos[0] - 1, pos[1]],
+            [posX, posY + 1],
+            [posX, posY - 1],
+            [posX + 1, posY],
+            [posX - 1, posY],
         ];
 
         nearbyTilesPositions.forEach(([x, y]) => {
@@ -167,15 +167,12 @@ export default class TileBoard extends cc.Component {
     }
 
     tilesInRadius(tile: cc.Node, radius = 1) {
-        const pos = this.getTilePosition(tile);
+        const [posX, posY] = this.getTilePosition(tile);
         const foundTiles = [];
 
         for (let x = -radius; x <= radius; x++) {
             for (let y = -radius; y <= radius; y++) {
-                const tileFound = this.checkTileInBoard([
-                    pos[0] + x,
-                    pos[1] + y,
-                ]);
+                const tileFound = this.checkTileInBoard([posX + x, posY + y]);
                 if (tileFound) foundTiles.push(tileFound);
             }
         }
@@ -324,8 +321,7 @@ export default class TileBoard extends cc.Component {
     }
 
     checkTileInBoard(pos) {
-        let x = pos[0];
-        let y = pos[1];
+        const [x, y] = pos;
         if (this.tileBoard[x] == null) {
             return false;
         }
