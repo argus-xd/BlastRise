@@ -260,7 +260,7 @@
     "_enabled": true,
     "boardSize": {
       "__type__": "cc.Vec2",
-      "x": 10,
+      "x": 11,
       "y": 11
     },
     "tilePrefab": {
@@ -1638,7 +1638,7 @@
       "__id__": 3
     },
     "_enabled": true,
-    "fadaInDuration": 0.5,
+    "fadeInDuration": 0.5,
     "insideFrame": {
       "__id__": 37
     },
@@ -3715,7 +3715,7 @@
       "array": [
         0,
         0,
-        424.352447854375,
+        416.55821922031504,
         0,
         0,
         0,

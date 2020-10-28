@@ -6,7 +6,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class GameStatus extends cc.Component {
     @property()
-    fadaInDuration: number = 0.5;
+    fadeInDuration: number = 0.5;
 
     @property(cc.Node)
     insideFrame: cc.Node = null;
@@ -50,12 +50,12 @@ export default class GameStatus extends cc.Component {
                 savePos.y + 1000
             );
             cc.tween(this.insideFrame)
-                .to(this.fadaInDuration, { position: savePos })
+                .to(this.fadeInDuration, { position: savePos })
                 .start();
         } else {
             this.insideFrame.scale = 0;
             cc.tween(this.insideFrame)
-                .to(this.fadaInDuration, { scale: 1 })
+                .to(this.fadeInDuration, { scale: 1 })
                 .start();
         }
         return true;
