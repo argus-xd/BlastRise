@@ -37,6 +37,11 @@ export default class TileBoard extends cc.Component {
     @property({
         type: cc.Integer,
     })
+    scoreBombCombo = 30;
+
+    @property({
+        type: cc.Integer,
+    })
     scoreToWin = 1000;
     tileSize: cc.Vec2;
     tileBoard = [];
@@ -252,7 +257,10 @@ export default class TileBoard extends cc.Component {
             0
         );
 
-        if (tile.tileType == TileType.tile && tilesScoreSum > 30) {
+        if (
+            tile.tileType == TileType.tile &&
+            tilesScoreSum > this.scoreBombCombo
+        ) {
             const [x, y] = this.getTilePosition(actionTile);
 
             const tileBomb = this.newTile(actionTile.position, this.bombPrefab);
